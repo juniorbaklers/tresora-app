@@ -161,7 +161,7 @@ export function ModulesForm({ type, espaceId }: { type: string; espaceId: string
       </div>
       <div className="mt-8 flex items-center gap-3">
         <Button asChild size="lg">
-          <Link href={`/espace/${espaceId}/dashboard?bienvenue=1`}>Créer mon espace</Link>
+          <Link href={`/onboarding/invitation?espaceId=${espaceId}`}>Continuer</Link>
         </Button>
         <p className="text-xs text-muted-foreground">
           {totalActifs} module{totalActifs > 1 ? "s" : ""} activé{totalActifs > 1 ? "s" : ""} — modifiable à tout moment dans les paramètres.

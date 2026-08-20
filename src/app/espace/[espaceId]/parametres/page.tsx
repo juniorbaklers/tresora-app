@@ -4,10 +4,9 @@ import { ShieldCheck, ScrollText, ChevronRight } from "lucide-react";
 import { PageContainer } from "@/components/app-shell/page-container";
 import { PageHeader } from "@/components/app-shell/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { InformationsGeneralesForm } from "@/components/parametres/informations-form";
 import { getEspace } from "@/lib/data";
 
 const MODULE_LABELS: Record<string, string> = {
@@ -42,16 +41,8 @@ export default async function ParametresPage(props: PageProps<"/espace/[espaceId
         <CardHeader>
           <CardTitle className="text-[15px] font-medium">Informations générales</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="nom">Nom de l&apos;espace</Label>
-            <Input id="nom" defaultValue={espace.nom} />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="devise">Devise</Label>
-            <Input id="devise" defaultValue="FCFA — XOF" disabled />
-          </div>
-          <Button size="sm">Enregistrer</Button>
+        <CardContent>
+          <InformationsGeneralesForm nom={espace.nom} />
         </CardContent>
       </Card>
 

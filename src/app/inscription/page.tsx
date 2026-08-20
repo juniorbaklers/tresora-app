@@ -39,7 +39,7 @@ export default function InscriptionPage() {
           <Input id="password" type="password" placeholder="8 caractères minimum" required />
         </div>
         <Button asChild className="w-full" size="lg">
-          <Link href="/onboarding/type">Créer mon compte</Link>
+          <Link href="/verification">Créer mon compte</Link>
         </Button>
         <p className="text-center text-xs text-muted-foreground">
           En continuant, vous acceptez les conditions d&apos;utilisation et la politique de confidentialité.

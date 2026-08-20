@@ -6,6 +6,7 @@ const ETAPES = [
   { id: 1, label: "Type d'espace" },
   { id: 2, label: "Nom de l'espace" },
   { id: 3, label: "Modules" },
+  { id: 4, label: "Invitations" },
 ];
 
 export function OnboardingShell({
@@ -14,7 +15,7 @@ export function OnboardingShell({
   subtitle,
   children,
 }: {
-  etape: 1 | 2 | 3;
+  etape: 1 | 2 | 3 | 4;
   title: string;
   subtitle: string;
   children: ReactNode;
@@ -52,7 +53,7 @@ export function OnboardingShell({
       </header>
       <main className="mx-auto max-w-3xl px-6 py-14">
         <p className="text-xs font-medium uppercase tracking-[0.14em] text-gold">
-          Étape {etape} sur 3
+          Étape {etape} sur 4
         </p>
         <h1 className="mt-2 font-heading text-[34px] leading-tight">{title}</h1>
         <p className="mt-2 max-w-xl text-[15px] text-muted-foreground">{subtitle}</p>

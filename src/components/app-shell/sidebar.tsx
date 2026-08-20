@@ -56,7 +56,7 @@ export function Sidebar({ espace }: { espace: Espace }) {
           <NotificationBell notifications={getNotifications(espace.id)} tone="dark" />
           <ThemeToggle tone="dark" />
         </div>
-        <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-[#9AA4B2] transition-colors hover:bg-white/[0.04] hover:text-[#F5F6F3]">
+        <Link href="/compte" className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-[#9AA4B2] transition-colors hover:bg-white/[0.04] hover:text-[#F5F6F3]">
           <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#16273F] text-xs font-medium text-[#F5F6F3]">
             {UTILISATEUR.initiales}
           </span>
@@ -64,7 +64,7 @@ export function Sidebar({ espace }: { espace: Espace }) {
             <span className="block text-[13px] font-medium text-[#F5F6F3]">{UTILISATEUR.nom}</span>
             <span className="block text-[11px] text-[#8A93A3]">Voir le profil</span>
           </span>
-        </button>
+        </Link>
       </div>
     </aside>
   );
