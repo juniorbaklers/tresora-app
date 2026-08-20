@@ -6,20 +6,29 @@ export function semaineDuMois(iso: string): number {
   return Math.min(4, Math.ceil(jour / 7));
 }
 
-export type PeriodeRapport = "S1" | "S2" | "S3" | "S4" | "tout";
+export type PeriodeRapport = "S1" | "S2" | "S3" | "S4" | "M1" | "M2" | "M3" | "ANNEE" | "PERSONNALISE";
 
-export const PERIODES_RAPPORT: { value: PeriodeRapport; label: string }[] = [
-  { value: "tout", label: "Mois complet — Août 2026" },
-  { value: "S1", label: "Semaine 1 (1–7 août)" },
-  { value: "S2", label: "Semaine 2 (8–14 août)" },
-  { value: "S3", label: "Semaine 3 (15–21 août)" },
-  { value: "S4", label: "Semaine 4 (22–31 août)" },
+export interface OptionPeriode {
+  value: PeriodeRapport;
+  label: string;
+  debut?: string;
+  fin?: string;
+}
+
+export const PERIODES_RAPPORT: OptionPeriode[] = [
+  { value: "S1", label: "Semaine 1 (1–7 août)", debut: "2026-08-01", fin: "2026-08-07" },
+  { value: "S2", label: "Semaine 2 (8–14 août)", debut: "2026-08-08", fin: "2026-08-14" },
+  { value: "S3", label: "Semaine 3 (15–21 août)", debut: "2026-08-15", fin: "2026-08-21" },
+  { value: "S4", label: "Semaine 4 (22–31 août)", debut: "2026-08-22", fin: "2026-08-31" },
+  { value: "M1", label: "1 mois — Août 2026", debut: "2026-08-01", fin: "2026-08-31" },
+  { value: "M2", label: "2 derniers mois — Juil.–Août 2026", debut: "2026-07-01", fin: "2026-08-31" },
+  { value: "M3", label: "3 derniers mois — Juin–Août 2026", debut: "2026-06-01", fin: "2026-08-31" },
+  { value: "ANNEE", label: "Année 2026", debut: "2026-01-01", fin: "2026-12-31" },
+  { value: "PERSONNALISE", label: "Période personnalisée…" },
 ];
 
-export function filtrerParPeriode<T extends { date: string }>(items: T[], periode: PeriodeRapport): T[] {
-  if (periode === "tout") return items;
-  const semaine = Number(periode.slice(1));
-  return items.filter((item) => semaineDuMois(item.date) === semaine);
+export function filtrerParIntervalle<T extends { date: string }>(items: T[], debut: string, fin: string): T[] {
+  return items.filter((item) => item.date >= debut && item.date <= fin);
 }
 
 export function serieHebdomadaire(espaceId: string) {
