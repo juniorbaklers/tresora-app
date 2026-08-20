@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { Wallet, TrendingUp, TrendingDown, Coins, AlertCircle, CalendarDays, ArrowLeftRight, CheckCircle2 } from "lucide-react";
-import { StatCard } from "@/components/dashboard/stat-card";
+import { TrendingUp, TrendingDown, Coins, AlertCircle, CalendarDays, ArrowLeftRight, CheckCircle2 } from "lucide-react";
+import { StatCard, SoldeHero } from "@/components/dashboard/stat-card";
 import { RecettesDepensesChart } from "@/components/dashboard/charts";
 import { OperationsRecentes } from "@/components/dashboard/operations-recentes";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -33,10 +33,19 @@ export function DashboardGroupe({ espace }: { espace: Espace }) {
 
   return (
     <div className="space-y-8">
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatCard label="Solde actuel" value={formatFCFA(soldeActuel(espace.id))} icon={Wallet} accent="neutral" />
-        <StatCard label="Recettes" value={formatFCFA(totalRecettes(espace.id))} icon={TrendingUp} accent="positive" />
-        <StatCard label="Dépenses" value={formatFCFA(totalDepenses(espace.id))} icon={TrendingDown} accent="negative" />
+      <div className="grid gap-4 lg:grid-cols-[1.6fr_1fr]">
+        <SoldeHero
+          label="Solde actuel"
+          value={formatFCFA(soldeActuel(espace.id))}
+          sub={`${formatFCFA(totalRecettes(espace.id))} de recettes et ${formatFCFA(totalDepenses(espace.id))} de dépenses ce mois-ci.`}
+        />
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-1">
+          <StatCard label="Recettes" value={formatFCFA(totalRecettes(espace.id))} icon={TrendingUp} accent="positive" />
+          <StatCard label="Dépenses" value={formatFCFA(totalDepenses(espace.id))} icon={TrendingDown} accent="negative" />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-5">
         <StatCard
           label="Cotisations collectées"
           value={stats ? formatFCFA(stats.totalCollecte) : "—"}

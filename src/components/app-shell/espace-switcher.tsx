@@ -38,14 +38,14 @@ export function EspaceSwitcher({ espace, tone = "dark" }: { espace: Espace; tone
           {espace.initiales}
         </span>
         <span className="min-w-0 flex-1">
-          <span className={cn("block truncate text-[13px] font-medium", tone === "dark" ? "text-[#F5F6F3]" : "text-foreground")}>
+          <span className={cn("block truncate text-[13px] font-medium", tone === "dark" ? "text-[#F6F1E7]" : "text-foreground")}>
             {espace.nom}
           </span>
-          <span className={cn("block truncate text-[11px]", tone === "dark" ? "text-[#8A93A3]" : "text-muted-foreground")}>
+          <span className={cn("block truncate text-[11px]", tone === "dark" ? "text-[#9B937F]" : "text-muted-foreground")}>
             {ROLE_LABELS[espace.role]}
           </span>
         </span>
-        <ChevronsUpDown className={cn("h-3.5 w-3.5 shrink-0", tone === "dark" ? "text-[#8A93A3]" : "text-muted-foreground")} />
+        <ChevronsUpDown className={cn("h-3.5 w-3.5 shrink-0", tone === "dark" ? "text-[#9B937F]" : "text-muted-foreground")} />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-64">
         <DropdownMenuLabel>Vos espaces</DropdownMenuLabel>

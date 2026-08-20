@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Logo } from "@/components/brand/logo";
+import { BandeTissee } from "@/components/brand/motif";
 import { cn } from "@/lib/utils";
 
 const ETAPES = [
@@ -52,11 +53,12 @@ export function OnboardingShell({
         </div>
       </header>
       <main className="mx-auto max-w-3xl px-6 py-14">
-        <p className="text-xs font-medium uppercase tracking-[0.14em] text-gold">
+        <BandeTissee tonalite="mixte" className="mb-5 w-16" epaisseur={4} />
+        <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-muted-foreground">
           Étape {etape} sur 4
         </p>
-        <h1 className="mt-2 font-heading text-[34px] leading-tight">{title}</h1>
-        <p className="mt-2 max-w-xl text-[15px] text-muted-foreground">{subtitle}</p>
+        <h1 className="mt-2 font-heading text-[38px] leading-[1.05]">{title}</h1>
+        <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-muted-foreground">{subtitle}</p>
         <div className="mt-10">{children}</div>
       </main>
     </div>

@@ -1,5 +1,5 @@
-import { Wallet, TrendingUp, TrendingDown, Landmark, HandCoins, ArrowLeftRight } from "lucide-react";
-import { StatCard } from "@/components/dashboard/stat-card";
+import { TrendingUp, TrendingDown, Landmark, HandCoins, ArrowLeftRight } from "lucide-react";
+import { StatCard, SoldeHero } from "@/components/dashboard/stat-card";
 import { RecettesDepensesChart, SoldeChart, RepartitionChart } from "@/components/dashboard/charts";
 import { OperationsRecentes } from "@/components/dashboard/operations-recentes";
 import { ContributionsAttendues } from "@/components/dashboard/contributions-attendues";
@@ -28,10 +28,20 @@ export function DashboardEglise({ espace }: { espace: Espace }) {
 
   return (
     <div className="space-y-8">
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-6">
-        <StatCard label="Solde actuel" value={formatFCFA(soldeActuel(espace.id))} icon={Wallet} accent="neutral" />
-        <StatCard label="Recettes du mois" value={formatFCFA(totalRecettes(espace.id))} icon={TrendingUp} accent="positive" />
-        <StatCard label="Dépenses du mois" value={formatFCFA(totalDepenses(espace.id))} icon={TrendingDown} accent="negative" />
+      {/* 70/30 : le solde domine, le reste se range en colonne à côté. */}
+      <div className="grid gap-4 lg:grid-cols-[1.6fr_1fr]">
+        <SoldeHero
+          label="Solde actuel"
+          value={formatFCFA(soldeActuel(espace.id))}
+          sub={`${formatFCFA(totalRecettes(espace.id))} de recettes et ${formatFCFA(totalDepenses(espace.id))} de dépenses ce mois-ci.`}
+        />
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-1">
+          <StatCard label="Recettes du mois" value={formatFCFA(totalRecettes(espace.id))} icon={TrendingUp} accent="positive" />
+          <StatCard label="Dépenses du mois" value={formatFCFA(totalDepenses(espace.id))} icon={TrendingDown} accent="negative" />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
         <StatCard label="Dîmes" value={formatFCFA(dimes)} icon={Landmark} accent="gold" />
         <StatCard label="Offrandes" value={formatFCFA(offrandes)} icon={HandCoins} accent="gold" />
         <StatCard label="Contributions reçues" value={formatFCFA(contributionsRecues)} icon={ArrowLeftRight} accent="positive" />

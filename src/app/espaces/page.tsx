@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Plus, ArrowRight, Church, Users2 } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
+import { BandeTissee } from "@/components/brand/motif";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ESPACES, MES_ESPACES_IDS, UTILISATEUR, soldeActuel } from "@/lib/data";
@@ -29,9 +30,12 @@ export default function EspacesPage() {
       </header>
 
       <main className="mx-auto max-w-5xl px-6 py-14">
-        <p className="text-xs font-medium uppercase tracking-[0.14em] text-gold">Bonjour {UTILISATEUR.nom.split(" ")[0]} 👋</p>
-        <h1 className="mt-2 font-heading text-[34px] leading-tight">Vos espaces</h1>
-        <p className="mt-2 max-w-xl text-[15px] text-muted-foreground">
+        <BandeTissee tonalite="mixte" className="mb-5 w-16" epaisseur={4} />
+        <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-muted-foreground">
+          Bonjour {UTILISATEUR.nom.split(" ")[0]} 👋
+        </p>
+        <h1 className="mt-2 font-heading text-[38px] leading-[1.05]">Vos espaces</h1>
+        <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-muted-foreground">
           Chaque espace a ses propres finances, ses membres et ses permissions. Choisissez celui que vous souhaitez gérer.
         </p>
 
@@ -40,24 +44,27 @@ export default function EspacesPage() {
             <Link
               key={e.id}
               href={`/espace/${e.id}/dashboard`}
-              className="group flex flex-col justify-between rounded-xl border border-border bg-card p-6 transition-colors hover:border-gold"
+              className="group flex flex-col justify-between overflow-hidden rounded-xl border border-border bg-card transition-colors hover:border-gold"
             >
-              <div>
-                <div className="flex items-center justify-between">
-                  <span className={`flex h-11 w-11 items-center justify-center rounded-lg text-sm font-semibold text-white ${e.couleur}`}>
-                    {e.initiales}
-                  </span>
-                  <ArrowRight className="h-4 w-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
+              <BandeTissee tonalite={e.type === "eglise" ? "mixte" : "or"} className="rounded-none" epaisseur={4} />
+              <div className="flex flex-1 flex-col justify-between p-6">
+                <div>
+                  <div className="flex items-center justify-between">
+                    <span className={`flex h-11 w-11 items-center justify-center rounded-lg text-sm font-semibold text-white ${e.couleur}`}>
+                      {e.initiales}
+                    </span>
+                    <ArrowRight className="h-4 w-4 text-muted-foreground transition-all group-hover:translate-x-0.5 group-hover:text-gold-foreground" />
+                  </div>
+                  <p className="mt-4 font-heading text-[21px] leading-tight">{e.nom}</p>
+                  <p className="mt-1.5 flex items-center gap-1.5 text-xs text-muted-foreground">
+                    {e.type === "eglise" ? <Church className="h-3.5 w-3.5" /> : <Users2 className="h-3.5 w-3.5" />}
+                    {e.membresCount} membres
+                  </p>
                 </div>
-                <p className="mt-4 font-heading text-[20px]">{e.nom}</p>
-                <p className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
-                  {e.type === "eglise" ? <Church className="h-3.5 w-3.5" /> : <Users2 className="h-3.5 w-3.5" />}
-                  {e.membresCount} membres
-                </p>
-              </div>
-              <div className="mt-6 flex items-center justify-between border-t border-ledger-line pt-4">
-                <Badge variant="secondary">{ROLE_LABELS[e.role]}</Badge>
-                <span className="font-tabular text-sm">{formatFCFA(soldeActuel(e.id))}</span>
+                <div className="mt-6 flex items-center justify-between border-t border-ledger-line pt-4">
+                  <Badge variant="secondary">{ROLE_LABELS[e.role]}</Badge>
+                  <span className="font-tabular text-sm">{formatFCFA(soldeActuel(e.id))}</span>
+                </div>
               </div>
             </Link>
           ))}

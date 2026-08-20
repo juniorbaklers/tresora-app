@@ -93,7 +93,7 @@ export function repartitionRecettes(espaceId: string) {
   return repartitionRecettesListe(getRecettes(espaceId));
 }
 
-const PALETTE_DEPENSES = ["var(--chart-3)", "var(--chart-4)", "var(--chart-1)", "var(--chart-2)", "var(--chart-5)", "#8A6D3B"];
+const PALETTE_DEPENSES = ["var(--chart-3)", "var(--chart-4)", "var(--chart-1)", "var(--chart-2)", "var(--chart-5)", "var(--terre)"];
 
 export function depensesParCategorieListe(depenses: Depense[]) {
   const totals = new Map<string, number>();

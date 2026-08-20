@@ -7,9 +7,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-inter);
-  --font-mono: var(--font-jetbrains-mono);
-  --font-heading: var(--font-instrument-serif);
+  --font-sans: var(--font-jakarta);
+  --font-mono: var(--font-plex-mono);
+  --font-heading: var(--font-fraunces);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -32,6 +32,9 @@
   --color-positive-foreground: var(--positive-foreground);
   --color-gold: var(--gold);
   --color-gold-foreground: var(--gold-foreground);
+  --color-indigo-deep: var(--indigo-deep);
+  --color-terre: var(--terre);
+  --color-palme: var(--palme);
   --color-ledger-line: var(--ledger-line);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
@@ -54,85 +57,95 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/*
+  Palette « tissage » — indigo de teinture, safran, terre de Korhogo, palme, coton écru.
+  Les neutres sont teintés (jamais de gris pur) pour rester dans la même famille chaude.
+*/
 :root {
-  --background: #F5F6F3;
-  --foreground: #1A2230;
-  --card: #FFFFFF;
-  --card-foreground: #1A2230;
-  --popover: #FFFFFF;
-  --popover-foreground: #1A2230;
-  --primary: #0F1B2D;
-  --primary-foreground: #F5F6F3;
-  --secondary: #E7E9E3;
-  --secondary-foreground: #1A2230;
-  --muted: #ECEDE8;
-  --muted-foreground: #6C7580;
-  --accent: #C89A4B;
-  --accent-foreground: #1A2230;
-  --destructive: #B3432E;
-  --destructive-foreground: #FBF3EF;
-  --positive: #1E6E64;
-  --positive-foreground: #F1F7F5;
-  --gold: #C89A4B;
-  --gold-foreground: #382A0F;
-  --border: #DCE1DC;
-  --input: #DCE1DC;
-  --ring: #C89A4B;
-  --ledger-line: #DCE1DC;
-  --chart-1: #C89A4B;
-  --chart-2: #1E6E64;
-  --chart-3: #0F1B2D;
-  --chart-4: #B3432E;
-  --chart-5: #8A93A3;
+  --background: #F6F1E7;
+  --foreground: #1B2338;
+  --card: #FFFCF6;
+  --card-foreground: #1B2338;
+  --popover: #FFFCF6;
+  --popover-foreground: #1B2338;
+  --primary: #1B2338;
+  --primary-foreground: #F6F1E7;
+  --secondary: #EBE3D4;
+  --secondary-foreground: #1B2338;
+  --muted: #F0E9DB;
+  --muted-foreground: #6E6555;
+  --accent: #C88A2E;
+  --accent-foreground: #2B1D06;
+  --destructive: #B34A24;
+  --destructive-foreground: #FBF1EC;
+  --positive: #16694F;
+  --positive-foreground: #EFF7F3;
+  --gold: #C88A2E;
+  --gold-foreground: #2B1D06;
+  --indigo-deep: #16203A;
+  --terre: #B34A24;
+  --palme: #16694F;
+  --border: #E2D9C8;
+  --input: #E2D9C8;
+  --ring: #C88A2E;
+  --ledger-line: #E2D9C8;
+  --chart-1: #C88A2E;
+  --chart-2: #16694F;
+  --chart-3: #2E4374;
+  --chart-4: #B34A24;
+  --chart-5: #9A8B70;
   --radius: 0.5rem;
-  --sidebar: #0F1B2D;
-  --sidebar-foreground: #DDE2E6;
-  --sidebar-primary: #C89A4B;
-  --sidebar-primary-foreground: #0F1B2D;
-  --sidebar-accent: #16273F;
-  --sidebar-accent-foreground: #F5F6F3;
-  --sidebar-border: rgba(255, 255, 255, 0.08);
-  --sidebar-ring: #C89A4B;
+  --sidebar: #16203A;
+  --sidebar-foreground: #DCD3C2;
+  --sidebar-primary: #E0A33E;
+  --sidebar-primary-foreground: #16203A;
+  --sidebar-accent: #1F2B4A;
+  --sidebar-accent-foreground: #F6F1E7;
+  --sidebar-border: rgba(255, 255, 255, 0.09);
+  --sidebar-ring: #E0A33E;
 }
 
 .dark {
-  --background: #0B1420;
-  --foreground: #E7E9E4;
-  --card: #121E2E;
-  --card-foreground: #E7E9E4;
-  --popover: #121E2E;
-  --popover-foreground: #E7E9E4;
-  --primary: #E7E9E4;
-  --primary-foreground: #0F1B2D;
-  --secondary: #16273F;
-  --secondary-foreground: #E7E9E4;
-  --muted: #16273F;
-  --muted-foreground: #8A93A3;
-  --accent: #C89A4B;
-  --accent-foreground: #12213B;
-  --destructive: #D9614A;
-  --destructive-foreground: #16273F;
-  --positive: #3E9C8E;
-  --positive-foreground: #0B1420;
-  --gold: #D8AE63;
-  --gold-foreground: #251B08;
-  --border: rgba(255, 255, 255, 0.09);
-  --input: rgba(255, 255, 255, 0.13);
-  --ring: #D8AE63;
-  --ledger-line: rgba(255, 255, 255, 0.09);
-  --chart-1: #D8AE63;
-  --chart-2: #3E9C8E;
+  --background: #101827;
+  --foreground: #F0E8DA;
+  --card: #17223A;
+  --card-foreground: #F0E8DA;
+  --popover: #17223A;
+  --popover-foreground: #F0E8DA;
+  --primary: #F0E8DA;
+  --primary-foreground: #16203A;
+  --secondary: #1F2B4A;
+  --secondary-foreground: #F0E8DA;
+  --muted: #1F2B4A;
+  --muted-foreground: #9B937F;
+  --accent: #E0A33E;
+  --accent-foreground: #221703;
+  --destructive: #D2703F;
+  --destructive-foreground: #1A1008;
+  --positive: #3E9C7A;
+  --positive-foreground: #0B1A14;
+  --gold: #E0A33E;
+  --gold-foreground: #221703;
+  --indigo-deep: #0B1220;
+  --terre: #D2703F;
+  --palme: #3E9C7A;
+  --border: rgba(240, 232, 218, 0.11);
+  --input: rgba(240, 232, 218, 0.15);
+  --ring: #E0A33E;
+  --ledger-line: rgba(240, 232, 218, 0.11);
+  --chart-1: #E0A33E;
+  --chart-2: #3E9C7A;
   --chart-3: #8FA4C4;
-  --chart-4: #D9614A;
-  --chart-5: #8A93A3;
-  --sidebar: #0B1420;
-  --sidebar-foreground: #DDE2E6;
-  --sidebar-primary: #D8AE63;
-  --sidebar-primary-foreground: #12213B;
-  --sidebar-accent: #16273F;
-  --sidebar-accent-foreground: #F5F6F3;
-  --sidebar-border: rgba(255, 255, 255, 0.08);
-  --sidebar-ring: #D8AE63;
+  --chart-4: #D2703F;
+  --chart-5: #9B937F;
+  --sidebar: #0B1220;
+  --sidebar-foreground: #DCD3C2;
+  --sidebar-primary: #E0A33E;
+  --sidebar-primary-foreground: #16203A;
+  --sidebar-accent: #1F2B4A;
+  --sidebar-accent-foreground: #F6F1E7;
+  --sidebar-border: rgba(255, 255, 255, 0.09);
+  --sidebar-ring: #E0A33E;
 }
 
 @layer base {
@@ -145,16 +158,62 @@
   html {
     @apply font-sans;
   }
+  /* Fraunces : axe « wonk » activé et optique réglée pour les grands titres. */
+  h1,
+  h2,
+  .font-heading {
+    font-variation-settings: "SOFT" 0, "WONK" 1;
+  }
 }
 
 @layer utilities {
   .font-heading {
-    font-family: var(--font-instrument-serif);
+    font-family: var(--font-fraunces);
+    letter-spacing: -0.015em;
   }
   .font-tabular {
-    font-family: var(--font-jetbrains-mono);
+    font-family: var(--font-plex-mono);
     font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
   }
+
+  /* ---- Motifs tissés ---------------------------------------------------
+     Géométrie de trame abstraite : bandes, losanges, chaîne et duite.
+     Uniquement des dégradés CSS — aucun asset, aucun coût réseau.
+  --------------------------------------------------------------------- */
+
+  /* Trame fine : la « duite » horizontale du métier à tisser. */
+  .motif-duite {
+    background-image: repeating-linear-gradient(
+      0deg,
+      color-mix(in srgb, var(--gold) 22%, transparent) 0 1px,
+      transparent 1px 9px
+    );
+  }
+
+  /* Losanges : le motif de tissage le plus répandu sur les bandes de coton. */
+  .motif-losange {
+    background-image:
+      repeating-linear-gradient(
+        45deg,
+        color-mix(in srgb, var(--gold) 16%, transparent) 0 1px,
+        transparent 1px 14px
+      ),
+      repeating-linear-gradient(
+        -45deg,
+        color-mix(in srgb, var(--gold) 16%, transparent) 0 1px,
+        transparent 1px 14px
+      );
+  }
+
+  /* Chaîne et duite croisées, pour les grands aplats sombres. */
+  .motif-trame {
+    background-image:
+      repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 12px),
+      repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 12px);
+  }
+
+  /* Bordure supérieure façon lisière de pagne. */
   .ledger-card {
     border-top: 2px solid var(--ledger-line);
   }
