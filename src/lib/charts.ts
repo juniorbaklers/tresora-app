@@ -1,9 +1,25 @@
 import { getDepenses, getEspace, getRecettes } from "./data";
-import type { CategorieRecette } from "./types";
+import type { CategorieRecette, Depense, Recette } from "./types";
 
-function semaineDuMois(iso: string): number {
+export function semaineDuMois(iso: string): number {
   const jour = Number(iso.slice(8, 10));
   return Math.min(4, Math.ceil(jour / 7));
+}
+
+export type PeriodeRapport = "S1" | "S2" | "S3" | "S4" | "tout";
+
+export const PERIODES_RAPPORT: { value: PeriodeRapport; label: string }[] = [
+  { value: "tout", label: "Mois complet — Août 2026" },
+  { value: "S1", label: "Semaine 1 (1–7 août)" },
+  { value: "S2", label: "Semaine 2 (8–14 août)" },
+  { value: "S3", label: "Semaine 3 (15–21 août)" },
+  { value: "S4", label: "Semaine 4 (22–31 août)" },
+];
+
+export function filtrerParPeriode<T extends { date: string }>(items: T[], periode: PeriodeRapport): T[] {
+  if (periode === "tout") return items;
+  const semaine = Number(periode.slice(1));
+  return items.filter((item) => semaineDuMois(item.date) === semaine);
 }
 
 export function serieHebdomadaire(espaceId: string) {
@@ -51,8 +67,7 @@ export const COULEURS_CATEGORIE_RECETTE: Record<CategorieRecette, string> = {
   autre: "var(--chart-5)",
 };
 
-export function repartitionRecettes(espaceId: string) {
-  const recettes = getRecettes(espaceId);
+export function repartitionRecettesListe(recettes: Recette[]) {
   const totals = new Map<CategorieRecette, number>();
   for (const r of recettes) totals.set(r.categorie, (totals.get(r.categorie) ?? 0) + r.montant);
   return Array.from(totals.entries())
@@ -65,13 +80,20 @@ export function repartitionRecettes(espaceId: string) {
     .sort((a, b) => b.montant - a.montant);
 }
 
+export function repartitionRecettes(espaceId: string) {
+  return repartitionRecettesListe(getRecettes(espaceId));
+}
+
 const PALETTE_DEPENSES = ["var(--chart-3)", "var(--chart-4)", "var(--chart-1)", "var(--chart-2)", "var(--chart-5)", "#8A6D3B"];
 
-export function depensesParCategorie(espaceId: string) {
-  const depenses = getDepenses(espaceId);
+export function depensesParCategorieListe(depenses: Depense[]) {
   const totals = new Map<string, number>();
   for (const d of depenses) totals.set(d.categorie, (totals.get(d.categorie) ?? 0) + d.montant);
   return Array.from(totals.entries())
     .map(([categorie, montant], i) => ({ categorie, montant, couleur: PALETTE_DEPENSES[i % PALETTE_DEPENSES.length] }))
     .sort((a, b) => b.montant - a.montant);
+}
+
+export function depensesParCategorie(espaceId: string) {
+  return depensesParCategorieListe(getDepenses(espaceId));
 }

@@ -19,6 +19,7 @@ const MODULE_LABELS: Record<string, string> = {
   rapports: "Rapports",
   dimes: "Dîmes",
   offrandes: "Offrandes",
+  dons: "Dons",
   contributions: "Contributions inter-espaces",
 };
 

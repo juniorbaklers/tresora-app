@@ -9,6 +9,7 @@ export type ModuleKey =
   | "rapports"
   | "dimes"
   | "offrandes"
+  | "dons"
   | "contributions";
 
 export type Role =
