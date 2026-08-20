@@ -23,7 +23,7 @@ export default async function FinancesPage(props: PageProps<"/espace/[espaceId]/
   return (
     <PageContainer>
       <PageHeader eyebrow={espace.nom} title="Trésorerie" subtitle="Solde, recettes et dépenses de cet espace, en temps réel." />
-      <FinancesTabs espaceId={espaceId} />
+      <FinancesTabs espaceId={espaceId} showCloture={espace.modules.includes("dimes") || espace.modules.includes("offrandes")} />
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatCard label="Solde initial" value={formatFCFA(espace.soldeInitial)} icon={Scale} />

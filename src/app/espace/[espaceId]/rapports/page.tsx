@@ -1,8 +1,7 @@
 import { notFound } from "next/navigation";
-import { FileDown, FileSpreadsheet, FileText } from "lucide-react";
 import { PageContainer } from "@/components/app-shell/page-container";
 import { PageHeader } from "@/components/app-shell/page-header";
-import { Button } from "@/components/ui/button";
+import { ExportButtons } from "@/components/rapports/export-buttons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getEspace, totalDepenses, totalRecettes } from "@/lib/data";
 import { repartitionRecettes, depensesParCategorie } from "@/lib/charts";
@@ -18,25 +17,23 @@ export default async function RapportsPage(props: PageProps<"/espace/[espaceId]/
   const totalR = totalRecettes(espaceId);
   const totalD = totalDepenses(espaceId);
   const soldeNet = totalR - totalD;
+  const periode = "Août 2026";
 
   return (
     <PageContainer className="max-w-3xl">
       <PageHeader
         eyebrow={espace.nom}
-        title="Rapport financier — Août 2026"
+        title={`Rapport financier — ${periode}`}
         subtitle="Généré automatiquement à partir des opérations enregistrées."
         action={
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm">
-              <FileDown className="h-4 w-4" /> PDF
-            </Button>
-            <Button variant="outline" size="sm">
-              <FileSpreadsheet className="h-4 w-4" /> Excel
-            </Button>
-            <Button variant="outline" size="sm">
-              <FileText className="h-4 w-4" /> Word
-            </Button>
-          </div>
+          <ExportButtons
+            espaceNom={espace.nom}
+            periode={periode}
+            recettes={recettes.map((r) => ({ label: r.label, montant: r.montant }))}
+            depenses={depenses.map((d) => ({ label: d.categorie, montant: d.montant }))}
+            totalRecettes={totalR}
+            totalDepenses={totalD}
+          />
         }
       />
 

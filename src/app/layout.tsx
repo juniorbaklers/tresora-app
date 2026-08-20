@@ -26,13 +26,24 @@ export const metadata: Metadata = {
     "La plateforme premium qui organise la trésorerie, les cotisations et les contributions de chaque espace : église, groupe ou association.",
 };
 
+const THEME_SCRIPT = `
+try {
+  var t = localStorage.getItem("tresora-theme");
+  if (t === "dark" || (!t && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+    document.documentElement.classList.add("dark");
+  }
+} catch (e) {}
+`;
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="fr"
+      suppressHydrationWarning
       className={`${inter.variable} ${jetbrainsMono.variable} ${instrumentSerif.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
         <TooltipProvider>{children}</TooltipProvider>
       </body>
     </html>

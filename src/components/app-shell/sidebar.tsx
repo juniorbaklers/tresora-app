@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bell } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
 import { EspaceSwitcher } from "@/components/app-shell/espace-switcher";
+import { NotificationBell } from "@/components/app-shell/notification-bell";
+import { ThemeToggle } from "@/components/app-shell/theme-toggle";
 import { navForEspace } from "@/lib/nav";
 import { cn } from "@/lib/utils";
 import type { Espace } from "@/lib/types";
-import { UTILISATEUR } from "@/lib/data";
+import { UTILISATEUR, getNotifications } from "@/lib/data";
 
 export function Sidebar({ espace }: { espace: Espace }) {
   const pathname = usePathname();
@@ -51,17 +52,18 @@ export function Sidebar({ espace }: { espace: Espace }) {
       </nav>
 
       <div className="border-t border-white/[0.08] p-3">
-        <button className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-[#9AA4B2] transition-colors hover:bg-white/[0.04] hover:text-[#F5F6F3]">
-          <span className="flex items-center gap-3">
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#16273F] text-xs font-medium text-[#F5F6F3]">
-              {UTILISATEUR.initiales}
-            </span>
-            <span className="text-left">
-              <span className="block text-[13px] font-medium text-[#F5F6F3]">{UTILISATEUR.nom}</span>
-              <span className="block text-[11px] text-[#8A93A3]">Voir le profil</span>
-            </span>
+        <div className="mb-1 flex items-center gap-1 px-1">
+          <NotificationBell notifications={getNotifications(espace.id)} tone="dark" />
+          <ThemeToggle tone="dark" />
+        </div>
+        <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-[#9AA4B2] transition-colors hover:bg-white/[0.04] hover:text-[#F5F6F3]">
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#16273F] text-xs font-medium text-[#F5F6F3]">
+            {UTILISATEUR.initiales}
           </span>
-          <Bell className="h-4 w-4" />
+          <span className="text-left">
+            <span className="block text-[13px] font-medium text-[#F5F6F3]">{UTILISATEUR.nom}</span>
+            <span className="block text-[11px] text-[#8A93A3]">Voir le profil</span>
+          </span>
         </button>
       </div>
     </aside>

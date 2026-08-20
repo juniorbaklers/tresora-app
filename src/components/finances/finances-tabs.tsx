@@ -4,12 +4,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-export function FinancesTabs({ espaceId }: { espaceId: string }) {
+export function FinancesTabs({ espaceId, showCloture = false }: { espaceId: string; showCloture?: boolean }) {
   const pathname = usePathname();
   const tabs = [
     { href: `/espace/${espaceId}/finances`, label: "Vue d'ensemble" },
     { href: `/espace/${espaceId}/finances/recettes`, label: "Recettes" },
     { href: `/espace/${espaceId}/finances/depenses`, label: "Dépenses" },
+    ...(showCloture ? [{ href: `/espace/${espaceId}/finances/cloture`, label: "Clôture du dimanche" }] : []),
   ];
 
   return (

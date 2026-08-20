@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ShieldCheck, ScrollText, ChevronRight } from "lucide-react";
 import { PageContainer } from "@/components/app-shell/page-container";
 import { PageHeader } from "@/components/app-shell/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -91,6 +93,40 @@ export default async function ParametresPage(props: PageProps<"/espace/[espaceId
           <Button variant="outline" size="sm" className="mt-4">
             Inviter un utilisateur
           </Button>
+        </CardContent>
+      </Card>
+
+      <Card className="ledger-card mt-6">
+        <CardHeader>
+          <CardTitle className="text-[15px] font-medium">Administration</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-1">
+          <Link
+            href={`/espace/${espaceId}/roles`}
+            className="flex items-center gap-3 rounded-lg px-2 py-2.5 transition-colors hover:bg-secondary"
+          >
+            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-secondary text-muted-foreground">
+              <ShieldCheck className="h-4 w-4" strokeWidth={1.75} />
+            </span>
+            <span className="flex-1">
+              <span className="block text-sm font-medium">Rôles et permissions</span>
+              <span className="block text-xs text-muted-foreground">Voir ce que chaque rôle peut faire dans cet espace</span>
+            </span>
+            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+          </Link>
+          <Link
+            href={`/espace/${espaceId}/journal`}
+            className="flex items-center gap-3 rounded-lg px-2 py-2.5 transition-colors hover:bg-secondary"
+          >
+            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-secondary text-muted-foreground">
+              <ScrollText className="h-4 w-4" strokeWidth={1.75} />
+            </span>
+            <span className="flex-1">
+              <span className="block text-sm font-medium">Journal d&apos;activité</span>
+              <span className="block text-xs text-muted-foreground">Historique des actions effectuées dans cet espace</span>
+            </span>
+            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+          </Link>
         </CardContent>
       </Card>
     </PageContainer>

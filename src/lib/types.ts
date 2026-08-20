@@ -138,3 +138,54 @@ export interface Contribution {
   statut: StatutContribution;
   historique: { date: string; montant: number }[];
 }
+
+export type TypeNotification =
+  | "cotisation_retard"
+  | "nouveau_paiement"
+  | "contribution_demandee"
+  | "contribution_recue"
+  | "evenement_bientot"
+  | "rapport_disponible";
+
+export interface NotificationItem {
+  id: string;
+  espaceId: string;
+  type: TypeNotification;
+  titre: string;
+  description: string;
+  date: string;
+  lue: boolean;
+}
+
+export interface EntreeJournal {
+  id: string;
+  espaceId: string;
+  date: string;
+  heure: string;
+  utilisateur: string;
+  role: string;
+  action: string;
+  ancienneValeur?: string;
+  nouvelleValeur?: string;
+}
+
+export interface Cloture {
+  id: string;
+  espaceId: string;
+  date: string;
+  culte: string;
+  offrandeOrdinaire: number;
+  offrandeSpeciale: number;
+  dimes: number;
+  autresRecettes: number;
+  totalCompte: number;
+  responsable: string;
+  justification?: string;
+}
+
+export interface PermissionRole {
+  role: Role;
+  label: string;
+  description: string;
+  permissions: string[];
+}

@@ -1,11 +1,15 @@
 import type {
+  Cloture,
   Contribution,
   Cotisation,
   Depense,
+  EntreeJournal,
   Espace,
   Evenement,
   Membre,
+  NotificationItem,
   PaiementCotisation,
+  PermissionRole,
   Recette,
 } from "./types";
 
@@ -412,3 +416,270 @@ export const UTILISATEUR = {
   email: "jean.koffi@example.ci",
   initiales: "JK",
 };
+
+export const NOTIFICATIONS: NotificationItem[] = [
+  {
+    id: "n-eglise-1",
+    espaceId: "eglise",
+    type: "contribution_recue",
+    titre: "Contribution reçue",
+    description: "Hommes de Galilée a versé 150 000 FCFA pour le projet de rénovation.",
+    date: "2026-08-02",
+    lue: true,
+  },
+  {
+    id: "n-eglise-2",
+    espaceId: "eglise",
+    type: "contribution_recue",
+    titre: "Contribution reçue",
+    description: "Disciples d'Emmaüs a versé 100 000 FCFA pour le projet de rénovation.",
+    date: "2026-08-05",
+    lue: true,
+  },
+  {
+    id: "n-eglise-3",
+    espaceId: "eglise",
+    type: "contribution_demandee",
+    titre: "Contribution en attente",
+    description: "La Chorale n'a pas encore répondu à la demande de 100 000 FCFA.",
+    date: "2026-08-15",
+    lue: false,
+  },
+  {
+    id: "n-eglise-4",
+    espaceId: "eglise",
+    type: "rapport_disponible",
+    titre: "Rapport mensuel disponible",
+    description: "Le rapport financier d'août 2026 est prêt à être consulté.",
+    date: "2026-08-20",
+    lue: false,
+  },
+  {
+    id: "n-emmaus-1",
+    espaceId: "emmaus",
+    type: "cotisation_retard",
+    titre: "Cotisation en retard",
+    description: "5 membres n'ont pas encore réglé la cotisation d'août 2026.",
+    date: "2026-08-16",
+    lue: false,
+  },
+  {
+    id: "n-emmaus-2",
+    espaceId: "emmaus",
+    type: "nouveau_paiement",
+    titre: "Nouveau paiement enregistré",
+    description: "Serge Assi a payé 2 000 FCFA pour la cotisation d'août.",
+    date: "2026-08-14",
+    lue: true,
+  },
+  {
+    id: "n-emmaus-3",
+    espaceId: "emmaus",
+    type: "contribution_demandee",
+    titre: "L'église demande une contribution",
+    description: "200 000 FCFA sont demandés pour le projet de rénovation de la salle de culte.",
+    date: "2026-08-05",
+    lue: true,
+  },
+  {
+    id: "n-emmaus-4",
+    espaceId: "emmaus",
+    type: "evenement_bientot",
+    titre: "Événement à venir",
+    description: "La sortie annuelle des jeunes commence dans quelques semaines.",
+    date: "2026-08-18",
+    lue: false,
+  },
+];
+
+export function getNotifications(espaceId: string): NotificationItem[] {
+  return NOTIFICATIONS.filter((n) => n.espaceId === espaceId).sort((a, b) => b.date.localeCompare(a.date));
+}
+
+export const JOURNAL: EntreeJournal[] = [
+  {
+    id: "j-1",
+    espaceId: "emmaus",
+    date: "2026-08-14",
+    heure: "14:32",
+    utilisateur: "Jean Koffi",
+    role: "Trésorier",
+    action: "A enregistré un paiement de cotisation",
+    ancienneValeur: "0 FCFA",
+    nouvelleValeur: "Serge Assi — 2 000 FCFA",
+  },
+  {
+    id: "j-2",
+    espaceId: "emmaus",
+    date: "2026-08-17",
+    heure: "09:10",
+    utilisateur: "Jean Koffi",
+    role: "Trésorier",
+    action: "A enregistré une dépense",
+    nouvelleValeur: "Reconnaissance du site — 25 000 FCFA",
+  },
+  {
+    id: "j-3",
+    espaceId: "emmaus",
+    date: "2026-08-05",
+    heure: "18:47",
+    utilisateur: "Grace Konan",
+    role: "Responsable",
+    action: "A enregistré un versement de contribution",
+    ancienneValeur: "0 FCFA",
+    nouvelleValeur: "100 000 FCFA vers Église Emmanuel",
+  },
+  {
+    id: "j-4",
+    espaceId: "eglise",
+    date: "2026-08-19",
+    heure: "12:05",
+    utilisateur: "Jean Koffi",
+    role: "Trésorier",
+    action: "A enregistré une recette",
+    nouvelleValeur: "Dîmes du dimanche — 126 000 FCFA",
+  },
+  {
+    id: "j-5",
+    espaceId: "eglise",
+    date: "2026-08-18",
+    heure: "16:20",
+    utilisateur: "Jean Koffi",
+    role: "Trésorier",
+    action: "A enregistré une dépense",
+    nouvelleValeur: "Impression bulletins & bannières — 95 000 FCFA",
+  },
+  {
+    id: "j-6",
+    espaceId: "eglise",
+    date: "2026-08-02",
+    heure: "11:15",
+    utilisateur: "Jean Koffi",
+    role: "Trésorier",
+    action: "A validé une clôture du dimanche",
+    nouvelleValeur: "02 août 2026 — écart 0 FCFA",
+  },
+  {
+    id: "j-7",
+    espaceId: "eglise",
+    date: "2026-08-01",
+    heure: "08:52",
+    utilisateur: "Marie Kouassi",
+    role: "Responsable",
+    action: "A modifié le montant d'une cotisation",
+    ancienneValeur: "1 500 FCFA",
+    nouvelleValeur: "2 000 FCFA",
+  },
+];
+
+export function getJournal(espaceId: string): EntreeJournal[] {
+  return JOURNAL.filter((j) => j.espaceId === espaceId).sort(
+    (a, b) => `${b.date}${b.heure}`.localeCompare(`${a.date}${a.heure}`)
+  );
+}
+
+export const CLOTURES: Cloture[] = [
+  {
+    id: "cl-1",
+    espaceId: "eglise",
+    date: "2026-08-02",
+    culte: "Culte du dimanche matin",
+    offrandeOrdinaire: 92_000,
+    offrandeSpeciale: 100_000,
+    dimes: 138_000,
+    autresRecettes: 0,
+    totalCompte: 330_000,
+    responsable: "Jean Koffi",
+  },
+  {
+    id: "cl-2",
+    espaceId: "eglise",
+    date: "2026-08-09",
+    culte: "Culte du dimanche matin",
+    offrandeOrdinaire: 88_000,
+    offrandeSpeciale: 0,
+    dimes: 145_000,
+    autresRecettes: 0,
+    totalCompte: 233_000,
+    responsable: "Jean Koffi",
+  },
+  {
+    id: "cl-3",
+    espaceId: "eglise",
+    date: "2026-08-16",
+    culte: "Culte du dimanche matin",
+    offrandeOrdinaire: 96_000,
+    offrandeSpeciale: 0,
+    dimes: 141_000,
+    autresRecettes: 50_000,
+    totalCompte: 286_500,
+    responsable: "Jean Koffi",
+    justification: "Écart de 500 FCFA — pièce manquante lors du comptage, à vérifier.",
+  },
+  {
+    id: "cl-4",
+    espaceId: "eglise",
+    date: "2026-08-19",
+    culte: "Culte du dimanche matin",
+    offrandeOrdinaire: 74_000,
+    offrandeSpeciale: 0,
+    dimes: 126_000,
+    autresRecettes: 0,
+    totalCompte: 200_000,
+    responsable: "Jean Koffi",
+  },
+];
+
+export function getClotures(espaceId: string): Cloture[] {
+  return CLOTURES.filter((c) => c.espaceId === espaceId).sort((a, b) => b.date.localeCompare(a.date));
+}
+
+export const PERMISSIONS_LIST = [
+  "Voir",
+  "Créer",
+  "Modifier",
+  "Supprimer",
+  "Valider",
+  "Exporter",
+  "Gérer les membres",
+  "Gérer les cotisations",
+  "Gérer les événements",
+  "Gérer les recettes",
+  "Gérer les dépenses",
+  "Gérer les rapports",
+  "Inviter des utilisateurs",
+  "Gérer les paramètres",
+] as const;
+
+export const ROLES: PermissionRole[] = [
+  {
+    role: "proprietaire",
+    label: "Propriétaire",
+    description: "Contrôle total de l'espace.",
+    permissions: [...PERMISSIONS_LIST],
+  },
+  {
+    role: "administrateur",
+    label: "Administrateur",
+    description: "Gestion globale de l'espace, sans pouvoir le supprimer.",
+    permissions: PERMISSIONS_LIST.filter((p) => p !== "Supprimer"),
+  },
+  {
+    role: "tresorier",
+    label: "Trésorier",
+    description: "Gestion financière complète : recettes, dépenses, cotisations, rapports.",
+    permissions: ["Voir", "Créer", "Modifier", "Valider", "Exporter", "Gérer les cotisations", "Gérer les recettes", "Gérer les dépenses", "Gérer les rapports"],
+  },
+  {
+    role: "responsable",
+    label: "Responsable",
+    description: "Accès aux modules qui lui sont confiés.",
+    permissions: ["Voir", "Créer", "Modifier", "Gérer les membres", "Gérer les événements"],
+  },
+  {
+    role: "membre",
+    label: "Membre",
+    description: "Accès limité à ses propres informations.",
+    permissions: ["Voir"],
+  },
+];

@@ -33,7 +33,7 @@ export default async function RecettesPage(props: PageProps<"/espace/[espaceId]/
           </Button>
         }
       />
-      <FinancesTabs espaceId={espaceId} />
+      <FinancesTabs espaceId={espaceId} showCloture={espace.modules.includes("dimes") || espace.modules.includes("offrandes")} />
 
       {recettes.length === 0 ? (
         <EmptyState icon={TrendingUp} title="Aucune recette pour le moment" description="Enregistrez votre première recette pour commencer." />

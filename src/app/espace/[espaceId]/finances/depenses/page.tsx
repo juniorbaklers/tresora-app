@@ -33,7 +33,7 @@ export default async function DepensesPage(props: PageProps<"/espace/[espaceId]/
           </Button>
         }
       />
-      <FinancesTabs espaceId={espaceId} />
+      <FinancesTabs espaceId={espaceId} showCloture={espace.modules.includes("dimes") || espace.modules.includes("offrandes")} />
 
       {depenses.length === 0 ? (
         <EmptyState icon={TrendingDown} title="Aucune dépense pour le moment" description="Enregistrez votre première dépense pour commencer." />

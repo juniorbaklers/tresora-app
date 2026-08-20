@@ -7,12 +7,18 @@ import type { Espace } from "@/lib/types";
 export function AppShell({ espace, children }: { espace: Espace; children: ReactNode }) {
   return (
     <div className="min-h-svh bg-background">
-      <Sidebar espace={espace} />
-      <div className="lg:pl-64">
-        <Topbar espace={espace} />
-        <main className="pb-24 lg:pb-10">{children}</main>
+      <div className="print:hidden">
+        <Sidebar espace={espace} />
       </div>
-      <MobileNav espace={espace} />
+      <div className="lg:pl-64 print:pl-0">
+        <div className="print:hidden">
+          <Topbar espace={espace} />
+        </div>
+        <main className="pb-24 lg:pb-10 print:pb-0">{children}</main>
+      </div>
+      <div className="print:hidden">
+        <MobileNav espace={espace} />
+      </div>
     </div>
   );
 }
