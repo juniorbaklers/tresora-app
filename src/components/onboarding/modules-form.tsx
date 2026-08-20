@@ -9,18 +9,20 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import type { ModuleKey } from "@/lib/types";
 
-const MODULES: { key: ModuleKey; label: string; description: string; icon: typeof Users; eglise?: boolean }[] = [
+const MODULES: { key: ModuleKey; label: string; description: string; icon: typeof Users; eglise?: boolean; obligatoire?: boolean }[] = [
   { key: "membres", label: "Membres", description: "Fiches, coordonnées, statut", icon: Users },
   { key: "cotisations", label: "Cotisations", description: "Collectes internes récurrentes", icon: Coins },
   { key: "evenements", label: "Événements", description: "Objectifs financiers, participants", icon: CalendarDays },
   { key: "recettes", label: "Recettes", description: "Toutes les entrées d'argent", icon: TrendingUp },
   { key: "depenses", label: "Dépenses", description: "Sorties, justificatifs", icon: TrendingDown },
-  { key: "rapports", label: "Rapports", description: "Exports PDF, Excel, Word", icon: FileBarChart },
+  { key: "rapports", label: "Rapports", description: "Exports PDF, Excel, Word", icon: FileBarChart, obligatoire: true },
   { key: "dimes", label: "Dîmes", description: "Suivi des dîmes par culte", icon: Wallet, eglise: true },
   { key: "offrandes", label: "Offrandes", description: "Ordinaires, spéciales, cultes du soir", icon: HandCoins, eglise: true },
   { key: "dons", label: "Dons", description: "Dons ponctuels de membres ou de tiers", icon: Gift },
   { key: "contributions", label: "Contributions inter-espaces", description: "Demandes de fonds entre espaces", icon: ArrowLeftRight },
 ];
+
+const MODULES_OBLIGATOIRES = MODULES.filter((m) => m.obligatoire).map((m) => m.key);
 
 interface ModulePersonnalise {
   key: string;
@@ -38,6 +40,7 @@ export function ModulesForm({ type, espaceId }: { type: string; espaceId: string
   const [nomPersonnalise, setNomPersonnalise] = useState("");
 
   function toggle(key: ModuleKey) {
+    if (MODULES_OBLIGATOIRES.includes(key)) return;
     setSelected((prev) => {
       const next = new Set(prev);
       if (next.has(key)) next.delete(key);
@@ -66,10 +69,12 @@ export function ModulesForm({ type, espaceId }: { type: string; espaceId: string
       <div className="grid gap-3 sm:grid-cols-2">
         {MODULES.map((m) => {
           const active = selected.has(m.key);
+          const obligatoire = !!m.obligatoire;
           return (
             <div
               role="button"
-              tabIndex={0}
+              tabIndex={obligatoire ? -1 : 0}
+              aria-disabled={obligatoire}
               key={m.key}
               onClick={() => toggle(m.key)}
               onKeyDown={(e) => {
@@ -79,8 +84,9 @@ export function ModulesForm({ type, espaceId }: { type: string; espaceId: string
                 }
               }}
               className={cn(
-                "flex cursor-pointer items-start gap-3 rounded-xl border p-4 text-left transition-colors",
-                active ? "border-gold bg-gold/[0.06]" : "border-border bg-card hover:border-foreground/20"
+                "flex items-start gap-3 rounded-xl border p-4 text-left transition-colors",
+                obligatoire ? "cursor-default border-gold bg-gold/[0.06]" : "cursor-pointer",
+                !obligatoire && (active ? "border-gold bg-gold/[0.06]" : "border-border bg-card hover:border-foreground/20")
               )}
             >
               <span className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-lg", active ? "bg-gold text-gold-foreground" : "bg-secondary text-muted-foreground")}>
@@ -89,7 +95,13 @@ export function ModulesForm({ type, espaceId }: { type: string; espaceId: string
               <span className="flex-1">
                 <span className="flex items-center justify-between">
                   <span className="text-sm font-medium">{m.label}</span>
-                  <Checkbox checked={active} onCheckedChange={() => toggle(m.key)} onClick={(e) => e.stopPropagation()} />
+                  {obligatoire ? (
+                    <span className="rounded-full bg-gold/15 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-gold-foreground">
+                      Toujours actif
+                    </span>
+                  ) : (
+                    <Checkbox checked={active} onCheckedChange={() => toggle(m.key)} onClick={(e) => e.stopPropagation()} />
+                  )}
                 </span>
                 <span className="mt-0.5 block text-xs text-muted-foreground">{m.description}</span>
               </span>

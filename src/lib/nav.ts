@@ -26,14 +26,10 @@ export const NAV_ITEMS: NavItem[] = [
   { href: (id) => `/espace/${id}/evenements`, label: "Événements", icon: CalendarDays, module: "evenements", matchPrefix: "evenements" },
   { href: (id) => `/espace/${id}/contributions`, label: "Contributions", icon: ArrowLeftRight, module: "contributions", matchPrefix: "contributions" },
   { href: (id) => `/espace/${id}/membres`, label: "Membres", icon: Users, module: "membres", matchPrefix: "membres" },
-  { href: (id) => `/espace/${id}/rapports`, label: "Rapports", icon: FileBarChart, module: "rapports", matchPrefix: "rapports" },
+  { href: (id) => `/espace/${id}/rapports`, label: "Rapports", icon: FileBarChart, matchPrefix: "rapports" },
   { href: (id) => `/espace/${id}/parametres`, label: "Paramètres", icon: Settings, matchPrefix: "parametres" },
 ];
 
 export function navForEspace(espace: Espace): NavItem[] {
-  return NAV_ITEMS.filter((item) => {
-    if (!item.module) return true;
-    if (item.module === "cotisations" && espace.modules.includes("cotisations")) return true;
-    return espace.modules.includes(item.module);
-  });
+  return NAV_ITEMS.filter((item) => !item.module || espace.modules.includes(item.module));
 }
