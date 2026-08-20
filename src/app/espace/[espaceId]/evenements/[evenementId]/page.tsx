@@ -5,8 +5,12 @@ import { PageHeader } from "@/components/app-shell/page-header";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { Progress } from "@/components/ui/progress";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
-import { getDepensesEvenement, getEspace, getEvenement } from "@/lib/data";
+import { EVENEMENTS, getDepensesEvenement, getEspace, getEvenement } from "@/lib/data";
 import { formatDate, formatFCFA, pct } from "@/lib/format";
+
+export function generateStaticParams() {
+  return EVENEMENTS.map((e) => ({ espaceId: e.espaceId, evenementId: e.id }));
+}
 
 export default async function EvenementDetailPage(props: PageProps<"/espace/[espaceId]/evenements/[evenementId]">) {
   const { espaceId, evenementId } = await props.params;

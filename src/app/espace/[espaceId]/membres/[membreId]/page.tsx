@@ -4,8 +4,14 @@ import { PageContainer } from "@/components/app-shell/page-container";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PaiementStatutBadge } from "@/components/cotisations/statut-badge";
-import { getCotisations, getEspace, getMembre } from "@/lib/data";
+import { MEMBRES, getCotisations, getEspace, getMembre } from "@/lib/data";
 import { formatDate, formatFCFA } from "@/lib/format";
+
+export function generateStaticParams() {
+  return Object.values(MEMBRES)
+    .flat()
+    .map((m) => ({ espaceId: m.espaceId, membreId: m.id }));
+}
 
 export default async function MembreDetailPage(props: PageProps<"/espace/[espaceId]/membres/[membreId]">) {
   const { espaceId, membreId } = await props.params;

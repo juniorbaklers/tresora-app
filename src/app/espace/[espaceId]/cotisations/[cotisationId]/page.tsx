@@ -5,8 +5,12 @@ import { PageHeader } from "@/components/app-shell/page-header";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { SuiviTable } from "@/components/cotisations/suivi-table";
 import { Badge } from "@/components/ui/badge";
-import { cotisationStats, getCotisation, getEspace, getMembre } from "@/lib/data";
+import { COTISATIONS, cotisationStats, getCotisation, getEspace, getMembre } from "@/lib/data";
 import { formatDate, formatFCFA } from "@/lib/format";
+
+export function generateStaticParams() {
+  return COTISATIONS.map((c) => ({ espaceId: c.espaceId, cotisationId: c.id }));
+}
 
 const PERIODICITE_LABELS: Record<string, string> = {
   unique: "Unique",

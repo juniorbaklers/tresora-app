@@ -5,6 +5,13 @@ import { VersementPanel } from "@/components/contributions/versement-panel";
 import { CONTRIBUTIONS, getEspace } from "@/lib/data";
 import { formatDate } from "@/lib/format";
 
+export function generateStaticParams() {
+  return CONTRIBUTIONS.flatMap((c) => [
+    { espaceId: c.espaceDemandeurId, contributionId: c.id },
+    { espaceId: c.espaceCibleId, contributionId: c.id },
+  ]);
+}
+
 export default async function ContributionDetailPage(props: PageProps<"/espace/[espaceId]/contributions/[contributionId]">) {
   const { espaceId, contributionId } = await props.params;
   const espace = getEspace(espaceId);
