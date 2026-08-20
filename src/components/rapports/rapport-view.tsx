@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import { ExportButtons } from "@/components/rapports/export-buttons";
 import { PageHeader } from "@/components/app-shell/page-header";
 import {
@@ -19,7 +20,7 @@ import {
   LABELS_CATEGORIE_RECETTE,
   type PeriodeRapport,
 } from "@/lib/charts";
-import { formatFCFA } from "@/lib/format";
+import { formatDate, formatFCFA } from "@/lib/format";
 import type { CategorieRecette, Depense, Espace, Recette } from "@/lib/types";
 
 export function RapportView({ espace, recettes, depenses }: { espace: Espace; recettes: Recette[]; depenses: Depense[] }) {
@@ -59,8 +60,12 @@ export function RapportView({ espace, recettes, depenses }: { espace: Espace; re
   const fin = periode === "PERSONNALISE" ? finPerso : optionActive?.fin ?? "2026-12-31";
 
   const { repartitionR, repartitionD, totalR, totalD, recettesFiltrees, depensesFiltrees } = useMemo(() => {
-    const recettesIntervalle = filtrerParIntervalle(recettes, debut, fin).filter((r) => !categoriesRecetteExclues.has(r.categorie));
-    const depensesIntervalle = filtrerParIntervalle(depenses, debut, fin).filter((d) => !categoriesDepenseExclues.has(d.categorie));
+    const recettesIntervalle = filtrerParIntervalle(recettes, debut, fin)
+      .filter((r) => !categoriesRecetteExclues.has(r.categorie))
+      .sort((a, b) => b.date.localeCompare(a.date));
+    const depensesIntervalle = filtrerParIntervalle(depenses, debut, fin)
+      .filter((d) => !categoriesDepenseExclues.has(d.categorie))
+      .sort((a, b) => b.date.localeCompare(a.date));
     const repartitionR = repartitionRecettesListe(recettesIntervalle);
     const repartitionD = depensesParCategorieListe(depensesIntervalle);
     return {
@@ -91,6 +96,18 @@ export function RapportView({ espace, recettes, depenses }: { espace: Espace; re
             depenses={repartitionD.map((d) => ({ label: d.categorie, montant: d.montant }))}
             totalRecettes={totalR}
             totalDepenses={totalD}
+            detailRecettes={recettesFiltrees.map((r) => ({
+              date: r.date,
+              libelle: r.libelle,
+              categorie: LABELS_CATEGORIE_RECETTE[r.categorie],
+              montant: r.montant,
+            }))}
+            detailDepenses={depensesFiltrees.map((d) => ({
+              date: d.date,
+              libelle: d.description,
+              categorie: d.categorie,
+              montant: d.montant,
+            }))}
           />
         }
       />
@@ -190,6 +207,34 @@ export function RapportView({ espace, recettes, depenses }: { espace: Espace; re
             </CardContent>
           </Card>
 
+          {recettesFiltrees.length > 0 && (
+            <div className="mb-8">
+              <h3 className="mb-3 text-sm font-medium">Détail des recettes</h3>
+              <div className="overflow-x-auto rounded-xl border border-border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Date</TableHead>
+                      <TableHead>Libellé</TableHead>
+                      <TableHead>Catégorie</TableHead>
+                      <TableHead className="text-right">Montant</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {recettesFiltrees.map((r) => (
+                      <TableRow key={r.id}>
+                        <TableCell className="whitespace-nowrap text-muted-foreground">{formatDate(r.date)}</TableCell>
+                        <TableCell className="font-medium">{r.libelle}</TableCell>
+                        <TableCell className="text-muted-foreground">{LABELS_CATEGORIE_RECETTE[r.categorie]}</TableCell>
+                        <TableCell className="text-right font-tabular text-positive">+{formatFCFA(r.montant)}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+          )}
+
           <Card className="ledger-card mb-4">
             <CardHeader>
               <CardTitle className="text-[15px] font-medium">Dépenses</CardTitle>
@@ -213,6 +258,34 @@ export function RapportView({ espace, recettes, depenses }: { espace: Espace; re
               </div>
             </CardContent>
           </Card>
+
+          {depensesFiltrees.length > 0 && (
+            <div className="mb-8">
+              <h3 className="mb-3 text-sm font-medium">Détail des dépenses</h3>
+              <div className="overflow-x-auto rounded-xl border border-border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Date</TableHead>
+                      <TableHead>Description</TableHead>
+                      <TableHead>Catégorie</TableHead>
+                      <TableHead className="text-right">Montant</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {depensesFiltrees.map((d) => (
+                      <TableRow key={d.id}>
+                        <TableCell className="whitespace-nowrap text-muted-foreground">{formatDate(d.date)}</TableCell>
+                        <TableCell className="font-medium">{d.description}</TableCell>
+                        <TableCell className="text-muted-foreground">{d.categorie}</TableCell>
+                        <TableCell className="text-right font-tabular text-destructive">-{formatFCFA(d.montant)}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+          )}
 
           <Card className="ledger-card">
             <CardContent className="flex items-center justify-between py-5">
