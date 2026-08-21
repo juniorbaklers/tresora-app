@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { CompteMenu } from "@/components/app-shell/compte-menu";
 import { CompteForm } from "@/components/compte/compte-form";
 import { UTILISATEUR } from "@/lib/data";
 
@@ -10,10 +10,10 @@ export default function ComptePage() {
     <div className="min-h-svh bg-background">
       <header className="border-b border-border">
         <div className="mx-auto flex max-w-2xl items-center justify-between px-6 py-5">
-          <Logo />
-          <Avatar className="h-9 w-9">
-            <AvatarFallback className="bg-primary text-primary-foreground text-xs">{UTILISATEUR.initiales}</AvatarFallback>
-          </Avatar>
+          <Link href="/espaces" aria-label="Accueil Trésora">
+            <Logo />
+          </Link>
+          <CompteMenu nom={UTILISATEUR.nom} initiales={UTILISATEUR.initiales} />
         </div>
       </header>
 

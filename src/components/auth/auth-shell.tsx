@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Logo } from "@/components/brand/logo";
 import { EspaceStack } from "@/components/brand/espace-stack";
 import { BandeTissee, TrameLosange } from "@/components/brand/motif";
@@ -21,7 +22,9 @@ export function AuthShell({
       <div className="relative hidden flex-col justify-between overflow-hidden bg-[var(--indigo-deep)] p-12 lg:flex">
         <TrameLosange opacite={0.09} taille={56} />
         <div className="relative">
-          <Logo tone="dark" className="[&_span:last-child]:text-[#F6F1E7]" />
+          <Link href="/connexion" aria-label="Accueil Trésora">
+            <Logo tone="dark" className="[&_span:last-child]:text-[#F6F1E7]" />
+          </Link>
         </div>
         <div className="relative">
           <EspaceStack />
@@ -40,7 +43,9 @@ export function AuthShell({
       <div className="flex flex-col justify-center px-6 py-12 sm:px-12 lg:px-20">
         <div className="mx-auto w-full max-w-sm">
           <div className="mb-10 lg:hidden">
-            <Logo tone="light" />
+            <Link href="/connexion" aria-label="Accueil Trésora">
+              <Logo tone="light" />
+            </Link>
           </div>
           <BandeTissee tonalite="or" className="mb-5 w-12" />
           <p className="text-xs font-medium uppercase tracking-[0.16em] text-gold-foreground/70">{eyebrow}</p>

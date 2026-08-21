@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Plus, ArrowRight, Church, Users2 } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
 import { BandeTissee } from "@/components/brand/motif";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { CompteMenu } from "@/components/app-shell/compte-menu";
 import { Badge } from "@/components/ui/badge";
 import { ESPACES, MES_ESPACES_IDS, UTILISATEUR, soldeActuel } from "@/lib/data";
 import { formatFCFA } from "@/lib/format";
@@ -22,10 +22,10 @@ export default function EspacesPage() {
     <div className="min-h-svh bg-background">
       <header className="border-b border-border">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-5">
-          <Logo />
-          <Avatar className="h-9 w-9">
-            <AvatarFallback className="bg-primary text-primary-foreground text-xs">{UTILISATEUR.initiales}</AvatarFallback>
-          </Avatar>
+          <Link href="/espaces" aria-label="Accueil Trésora">
+            <Logo />
+          </Link>
+          <CompteMenu nom={UTILISATEUR.nom} initiales={UTILISATEUR.initiales} />
         </div>
       </header>
 
