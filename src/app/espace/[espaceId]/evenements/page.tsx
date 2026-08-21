@@ -39,11 +39,12 @@ export default async function EvenementsPage(props: PageProps<"/espace/[espaceId
         <EmptyState icon={CalendarDays} title="Aucun événement pour le moment" description="Créez un événement pour suivre sa collecte financière." />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
-          {evenements.map((e) => (
+          {evenements.map((e, i) => (
             <Link
               key={e.id}
               href={`/espace/${espaceId}/evenements/${e.id}`}
-              className="group flex flex-col rounded-xl border border-border bg-card shadow-[0_1px_2px_rgba(27,35,56,0.04),0_10px_28px_-16px_rgba(27,35,56,0.16)] p-5 transition-colors hover:border-gold"
+              className="carte-vive group animate-in fade-in slide-in-from-bottom-3 flex flex-col rounded-xl border border-border bg-card shadow-[0_1px_2px_rgba(27,35,56,0.04),0_10px_28px_-16px_rgba(27,35,56,0.16)] p-5 duration-700 fill-mode-both hover:border-gold"
+              style={{ animationDelay: `${i * 80}ms` }}
             >
               <div className="flex items-start justify-between gap-3">
                 <div>

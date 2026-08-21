@@ -37,11 +37,12 @@ export default function OnboardingTypePage() {
       subtitle="Vous ne créez que l'espace dont vous avez besoin. Vous pourrez en ajouter d'autres plus tard."
     >
       <div className="grid gap-4 sm:grid-cols-2">
-        {OPTIONS.map((o) => (
+        {OPTIONS.map((o, i) => (
           <Link
             key={o.type}
             href={`/onboarding/espace?type=${o.type}`}
-            className="group flex flex-col gap-4 rounded-xl border border-border bg-card shadow-[0_1px_2px_rgba(27,35,56,0.04),0_10px_28px_-16px_rgba(27,35,56,0.16)] p-6 transition-colors hover:border-gold"
+            className="carte-vive group animate-in fade-in slide-in-from-bottom-3 flex flex-col gap-4 rounded-xl border border-border bg-card shadow-[0_1px_2px_rgba(27,35,56,0.04),0_10px_28px_-16px_rgba(27,35,56,0.16)] p-6 duration-700 fill-mode-both hover:border-gold"
+            style={{ animationDelay: `${i * 90}ms` }}
           >
             <div className="flex items-center justify-between">
               <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-secondary text-foreground">

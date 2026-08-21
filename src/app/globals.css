@@ -230,4 +230,54 @@
   .ledger-card {
     border-top: 2px solid var(--ledger-line);
   }
+
+  /* ---- Mouvement -------------------------------------------------------
+     Un seul jeu de courbes, réutilisé partout, pour que le mouvement se
+     ressente comme un seul geste et non comme des effets empilés.
+  --------------------------------------------------------------------- */
+  .ease-sortie {
+    transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  /* Lisière qui « se tisse » de gauche à droite à l'apparition — la bande
+     tissée n'est pas juste posée, elle se construit sous les yeux. */
+  @keyframes tisser-h {
+    from { clip-path: inset(0 100% 0 0); }
+    to { clip-path: inset(0 0% 0 0); }
+  }
+  @keyframes tisser-v {
+    from { clip-path: inset(100% 0 0 0); }
+    to { clip-path: inset(0 0 0 0); }
+  }
+  .animate-tisser {
+    animation: tisser-h 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .animate-tisser-v {
+    animation: tisser-v 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  /* Carte qui se soulève légèrement au survol — feedback tactile discret. */
+  .carte-vive {
+    transition:
+      transform 260ms cubic-bezier(0.25, 1, 0.5, 1),
+      box-shadow 260ms cubic-bezier(0.25, 1, 0.5, 1),
+      border-color 260ms cubic-bezier(0.25, 1, 0.5, 1);
+  }
+  .carte-vive:hover {
+    transform: translateY(-3px);
+    box-shadow:
+      0 1px 2px rgba(27, 35, 56, 0.05),
+      0 20px 36px -18px rgba(27, 35, 56, 0.28);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

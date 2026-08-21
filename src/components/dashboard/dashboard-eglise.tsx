@@ -32,22 +32,22 @@ export function DashboardEglise({ espace }: { espace: Espace }) {
       <div className="grid gap-4 lg:grid-cols-[1.6fr_1fr]">
         <SoldeHero
           label="Solde actuel"
-          value={formatFCFA(soldeActuel(espace.id))}
+          montant={soldeActuel(espace.id)}
           sub={`${formatFCFA(totalRecettes(espace.id))} de recettes et ${formatFCFA(totalDepenses(espace.id))} de dépenses ce mois-ci.`}
         />
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-1">
-          <StatCard label="Recettes du mois" value={formatFCFA(totalRecettes(espace.id))} icon={TrendingUp} accent="positive" />
-          <StatCard label="Dépenses du mois" value={formatFCFA(totalDepenses(espace.id))} icon={TrendingDown} accent="negative" />
+          <StatCard label="Recettes du mois" value={formatFCFA(totalRecettes(espace.id))} icon={TrendingUp} accent="positive" index={0} />
+          <StatCard label="Dépenses du mois" value={formatFCFA(totalDepenses(espace.id))} icon={TrendingDown} accent="negative" index={1} />
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
-        <StatCard label="Dîmes" value={formatFCFA(dimes)} icon={Landmark} accent="gold" />
-        <StatCard label="Offrandes" value={formatFCFA(offrandes)} icon={HandCoins} accent="gold" />
-        <StatCard label="Contributions reçues" value={formatFCFA(contributionsRecues)} icon={ArrowLeftRight} accent="positive" />
+        <StatCard label="Dîmes" value={formatFCFA(dimes)} icon={Landmark} accent="gold" index={2} />
+        <StatCard label="Offrandes" value={formatFCFA(offrandes)} icon={HandCoins} accent="gold" index={3} />
+        <StatCard label="Contributions reçues" value={formatFCFA(contributionsRecues)} icon={ArrowLeftRight} accent="positive" index={4} />
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid animate-in fade-in slide-in-from-bottom-2 gap-4 duration-700 fill-mode-both lg:grid-cols-3" style={{ animationDelay: "220ms" }}>
         <Card className="ledger-card lg:col-span-2">
           <CardHeader>
             <CardTitle className="text-[15px] font-medium">Recettes et dépenses — Août 2026</CardTitle>
@@ -66,7 +66,7 @@ export function DashboardEglise({ espace }: { espace: Espace }) {
         </Card>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid animate-in fade-in slide-in-from-bottom-2 gap-4 duration-700 fill-mode-both lg:grid-cols-2" style={{ animationDelay: "280ms" }}>
         <Card className="ledger-card">
           <CardHeader>
             <CardTitle className="text-[15px] font-medium">Répartition des recettes</CardTitle>
@@ -100,7 +100,7 @@ export function DashboardEglise({ espace }: { espace: Espace }) {
         </Card>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid animate-in fade-in slide-in-from-bottom-2 gap-4 duration-700 fill-mode-both lg:grid-cols-2" style={{ animationDelay: "340ms" }}>
         <Card className="ledger-card">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-[15px] font-medium">Contributions attendues</CardTitle>

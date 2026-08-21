@@ -33,7 +33,7 @@ export function NotificationBell({ notifications: initial, tone = "dark" }: { no
         >
           <Bell className="h-4 w-4" />
           {nonLues > 0 && (
-            <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[9px] font-medium text-destructive-foreground">
+            <span className="animate-in zoom-in-50 fade-in absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[9px] font-medium text-destructive-foreground duration-300">
               {nonLues}
             </span>
           )}

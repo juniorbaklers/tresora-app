@@ -1,5 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 import { BandeTissee, TrameLosange } from "@/components/brand/motif";
+import { MontantAnime } from "@/components/dashboard/montant-anime";
 import { cn } from "@/lib/utils";
 
 type Accent = "neutral" | "positive" | "negative" | "gold";
@@ -13,7 +14,8 @@ const TONALITE = {
 
 /**
  * Carte de statistique secondaire. Une bande tissée en tête remplace le filet
- * uni : chaque famille de chiffre a sa tonalité.
+ * uni : chaque famille de chiffre a sa tonalité. `index` échelonne son entrée
+ * dans une grille (voir dashboards) sans que chaque appelant gère un délai.
  */
 export function StatCard({
   label,
@@ -21,15 +23,20 @@ export function StatCard({
   icon: Icon,
   sub,
   accent = "neutral",
+  index = 0,
 }: {
   label: string;
   value: string;
   icon: LucideIcon;
   sub?: string;
   accent?: Accent;
+  index?: number;
 }) {
   return (
-    <div className="group rounded-xl border border-border bg-card p-5 shadow-[0_1px_2px_rgba(27,35,56,0.04),0_10px_28px_-16px_rgba(27,35,56,0.16)] transition-colors hover:border-gold/50">
+    <div
+      className="carte-vive group animate-in fade-in slide-in-from-bottom-2 rounded-xl border border-border bg-card p-5 shadow-[0_1px_2px_rgba(27,35,56,0.04),0_10px_28px_-16px_rgba(27,35,56,0.16)] duration-500 fill-mode-both"
+      style={{ animationDelay: `${Math.min(index, 8) * 60}ms` }}
+    >
       <BandeTissee tonalite={TONALITE[accent]} className="mb-4 w-10" />
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
@@ -46,36 +53,34 @@ export function StatCard({
 }
 
 /**
- * Carte héroïque du solde. C'est le chiffre qui compte : il est traité en
- * Fraunces, à une échelle sans rapport avec le reste, sur fond indigo tramé.
+ * Carte héroïque du solde — le moment signature du tableau de bord. Le
+ * chiffre défile jusqu'à sa valeur (voir MontantAnime) plutôt que de
+ * s'afficher d'un bloc ; c'est la seule animation « spectaculaire » de
+ * l'app, tout le reste autour d'elle reste sobre.
  */
 export function SoldeHero({
   label,
-  value,
+  montant,
   sub,
   children,
 }: {
   label: string;
-  value: string;
+  montant: number;
   sub?: string;
   children?: React.ReactNode;
 }) {
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-[var(--indigo-deep)] p-6 sm:p-8">
+    <div className="relative animate-in fade-in slide-in-from-bottom-3 overflow-hidden rounded-2xl bg-[var(--indigo-deep)] p-6 duration-700 sm:p-8">
       <TrameLosange opacite={0.08} taille={52} />
       <div className="relative">
         <div className="flex items-center gap-3">
           <BandeTissee tonalite="mixte" className="w-14" epaisseur={4} />
           <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-[#C9BFA9]">{label}</p>
         </div>
-        <p
-          className={cn(
-            "mt-4 font-heading text-[clamp(2.4rem,7vw,4rem)] leading-[0.95] text-[#F6F1E7]",
-            "tabular-nums"
-          )}
-        >
-          {value}
-        </p>
+        <MontantAnime
+          montant={montant}
+          className={cn("mt-4 block font-heading text-[clamp(2.4rem,7vw,4rem)] leading-[0.95] text-[#F6F1E7]", "tabular-nums")}
+        />
         {sub && <p className="mt-3 text-sm text-[#9B937F]">{sub}</p>}
         {children && <div className="mt-6">{children}</div>}
       </div>

@@ -84,12 +84,17 @@ export function ModulesForm({ type, espaceId }: { type: string; espaceId: string
                 }
               }}
               className={cn(
-                "flex items-start gap-3 rounded-xl border p-4 text-left transition-colors",
-                obligatoire ? "cursor-default border-gold bg-gold/[0.06]" : "cursor-pointer",
-                !obligatoire && (active ? "border-gold bg-gold/[0.06]" : "border-border bg-card hover:border-foreground/20")
+                "ease-sortie flex items-start gap-3 rounded-xl border p-4 text-left transition-[transform,background-color,border-color] duration-200",
+                obligatoire ? "cursor-default border-gold bg-gold/[0.06]" : "cursor-pointer active:scale-[0.98]",
+                !obligatoire && (active ? "scale-[1.015] border-gold bg-gold/[0.06]" : "border-border bg-card hover:border-foreground/20")
               )}
             >
-              <span className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-lg", active ? "bg-gold text-gold-foreground" : "bg-secondary text-muted-foreground")}>
+              <span
+                className={cn(
+                  "ease-sortie flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-[transform,background-color,color] duration-200",
+                  active ? "scale-105 bg-gold text-gold-foreground" : "bg-secondary text-muted-foreground"
+                )}
+              >
                 <m.icon className="h-4 w-4" strokeWidth={1.75} />
               </span>
               <span className="flex-1">

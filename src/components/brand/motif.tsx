@@ -67,7 +67,7 @@ export function BandeTissee({
   return (
     <span
       aria-hidden
-      className={cn("flex w-full overflow-hidden rounded-full", className)}
+      className={cn("flex w-full animate-tisser overflow-hidden rounded-full", className)}
       style={{ height: epaisseur }}
     >
       {SEGMENTS[tonalite].map((s, i) => (
@@ -82,7 +82,7 @@ export function BandeTissee({
  */
 export function LisiereVerticale({ tonalite = "or", className }: { tonalite?: Tonalite; className?: string }) {
   return (
-    <span aria-hidden className={cn("flex w-[3px] flex-col overflow-hidden", className)}>
+    <span aria-hidden className={cn("flex w-[3px] animate-tisser-v flex-col overflow-hidden", className)}>
       {SEGMENTS[tonalite].map((s, i) => (
         <span key={i} style={{ flex: s.flex, backgroundColor: s.couleur }} />
       ))}

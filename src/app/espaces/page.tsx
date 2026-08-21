@@ -30,21 +30,28 @@ export default function EspacesPage() {
       </header>
 
       <main className="mx-auto max-w-5xl px-6 py-14">
-        <BandeTissee tonalite="mixte" className="mb-5 w-16" epaisseur={4} />
-        <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-muted-foreground">
-          Bonjour {UTILISATEUR.nom.split(" ")[0]} 👋
-        </p>
-        <h1 className="mt-2 font-heading text-[38px] leading-[1.05]">Vos espaces</h1>
-        <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-muted-foreground">
-          Chaque espace a ses propres finances, ses membres et ses permissions. Choisissez celui que vous souhaitez gérer.
-        </p>
+        <div className="animate-in fade-in slide-in-from-bottom-2 duration-700 fill-mode-both">
+          <BandeTissee tonalite="mixte" className="mb-5 w-16" epaisseur={4} />
+          <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-muted-foreground">
+            Bonjour {UTILISATEUR.nom.split(" ")[0]} 👋
+          </p>
+          <h1 className="mt-2 font-heading text-[38px] leading-[1.05]">Vos espaces</h1>
+          <p className="mt-3 max-w-xl text-[16px] leading-relaxed text-muted-foreground">
+            Chaque espace a ses propres{" "}
+            <span className="font-heading italic text-foreground">finances</span>, ses{" "}
+            <span className="font-heading italic text-foreground">membres</span> et ses{" "}
+            <span className="font-heading italic text-foreground">permissions</span>. Choisissez celui que vous
+            souhaitez gérer.
+          </p>
+        </div>
 
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {espaces.map((e) => (
+          {espaces.map((e, i) => (
             <Link
               key={e.id}
               href={`/espace/${e.id}/dashboard`}
-              className="group flex flex-col justify-between overflow-hidden rounded-xl border border-border bg-card shadow-[0_1px_2px_rgba(27,35,56,0.04),0_10px_28px_-16px_rgba(27,35,56,0.16)] transition-colors hover:border-gold"
+              className="carte-vive group animate-in fade-in slide-in-from-bottom-3 flex flex-col justify-between overflow-hidden rounded-xl border border-border bg-card shadow-[0_1px_2px_rgba(27,35,56,0.04),0_10px_28px_-16px_rgba(27,35,56,0.16)] duration-700 fill-mode-both hover:border-gold"
+              style={{ animationDelay: `${150 + i * 90}ms` }}
             >
               <BandeTissee tonalite={e.type === "eglise" ? "mixte" : "or"} className="rounded-none" epaisseur={4} />
               <div className="flex flex-1 flex-col justify-between p-6">
@@ -71,9 +78,10 @@ export default function EspacesPage() {
 
           <Link
             href="/onboarding/type"
-            className="flex min-h-[188px] flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border text-muted-foreground transition-colors hover:border-gold hover:text-foreground"
+            className="group animate-in fade-in slide-in-from-bottom-3 flex min-h-[188px] flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border text-muted-foreground duration-700 fill-mode-both transition-colors hover:border-gold hover:text-foreground"
+            style={{ animationDelay: `${150 + espaces.length * 90}ms` }}
           >
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary">
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary transition-transform duration-300 group-hover:scale-110 group-hover:bg-gold/15">
               <Plus className="h-5 w-5" />
             </span>
             <span className="text-sm font-medium">Créer un nouvel espace</span>

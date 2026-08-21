@@ -36,12 +36,12 @@ export function DashboardGroupe({ espace }: { espace: Espace }) {
       <div className="grid gap-4 lg:grid-cols-[1.6fr_1fr]">
         <SoldeHero
           label="Solde actuel"
-          value={formatFCFA(soldeActuel(espace.id))}
+          montant={soldeActuel(espace.id)}
           sub={`${formatFCFA(totalRecettes(espace.id))} de recettes et ${formatFCFA(totalDepenses(espace.id))} de dépenses ce mois-ci.`}
         />
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-1">
-          <StatCard label="Recettes" value={formatFCFA(totalRecettes(espace.id))} icon={TrendingUp} accent="positive" />
-          <StatCard label="Dépenses" value={formatFCFA(totalDepenses(espace.id))} icon={TrendingDown} accent="negative" />
+          <StatCard label="Recettes" value={formatFCFA(totalRecettes(espace.id))} icon={TrendingUp} accent="positive" index={0} />
+          <StatCard label="Dépenses" value={formatFCFA(totalDepenses(espace.id))} icon={TrendingDown} accent="negative" index={1} />
         </div>
       </div>
 
@@ -52,12 +52,14 @@ export function DashboardGroupe({ espace }: { espace: Espace }) {
           sub={stats ? `sur ${formatFCFA(stats.totalAttendu)} attendus` : undefined}
           icon={Coins}
           accent="gold"
+          index={2}
         />
         <StatCard
           label="Reste à collecter"
           value={stats ? formatFCFA(stats.totalAttendu - stats.totalCollecte) : "—"}
           icon={Coins}
           accent="negative"
+          index={3}
         />
         <StatCard
           label="Membres en retard"
@@ -65,18 +67,20 @@ export function DashboardGroupe({ espace }: { espace: Espace }) {
           sub="cotisation en cours"
           icon={AlertCircle}
           accent="negative"
+          index={4}
         />
-        <StatCard label="Événements actifs" value={String(evenementsActifs.length)} icon={CalendarDays} accent="neutral" />
+        <StatCard label="Événements actifs" value={String(evenementsActifs.length)} icon={CalendarDays} accent="neutral" index={5} />
         <StatCard
           label="Contributions demandées"
           value={String(contributionsRequises.length)}
           sub={`${contributionsRequises.filter((c) => c.statut === "paye").length} réglée(s)`}
           icon={ArrowLeftRight}
           accent="neutral"
+          index={6}
         />
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid animate-in fade-in slide-in-from-bottom-2 gap-4 duration-700 fill-mode-both lg:grid-cols-3" style={{ animationDelay: "260ms" }}>
         <Card className="ledger-card lg:col-span-2">
           <CardHeader>
             <CardTitle className="text-[15px] font-medium">Évolution financière — Août 2026</CardTitle>
@@ -126,7 +130,7 @@ export function DashboardGroupe({ espace }: { espace: Espace }) {
         </Card>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid animate-in fade-in slide-in-from-bottom-2 gap-4 duration-700 fill-mode-both lg:grid-cols-3" style={{ animationDelay: "320ms" }}>
         <Card className="ledger-card">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-[15px] font-medium">Événements</CardTitle>
@@ -204,7 +208,7 @@ export function DashboardGroupe({ espace }: { espace: Espace }) {
         </Card>
       </div>
 
-      <Card className="ledger-card">
+      <Card className="ledger-card animate-in fade-in slide-in-from-bottom-2 duration-700 fill-mode-both" style={{ animationDelay: "380ms" }}>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-[15px] font-medium">Activité récente</CardTitle>
           <Badge variant="secondary" className="font-normal">
