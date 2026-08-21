@@ -21,9 +21,12 @@ export function AuthShell({
     <div className="grid min-h-svh lg:grid-cols-[1.05fr_1fr]">
       <div className="relative hidden flex-col justify-between overflow-hidden bg-[var(--indigo-deep)] p-12 lg:flex">
         <TrameLosange opacite={0.09} taille={56} />
-        <div className="relative">
-          <Link href="/connexion" aria-label="Accueil Trésora">
+        <div className="relative flex items-center justify-between">
+          <Link href="/" aria-label="Accueil Trésora">
             <Logo tone="dark" className="[&_span:last-child]:text-[#F6F1E7]" />
+          </Link>
+          <Link href="/espaces" className="text-xs text-[#9B937F] underline underline-offset-4 hover:text-[#F6F1E7]">
+            Découvrir sans compte
           </Link>
         </div>
         <div className="relative">
@@ -42,9 +45,12 @@ export function AuthShell({
 
       <div className="flex flex-col justify-center px-6 py-12 sm:px-12 lg:px-20">
         <div className="mx-auto w-full max-w-sm">
-          <div className="mb-10 lg:hidden">
-            <Link href="/connexion" aria-label="Accueil Trésora">
+          <div className="mb-10 flex items-center justify-between lg:hidden">
+            <Link href="/" aria-label="Accueil Trésora">
               <Logo tone="light" />
+            </Link>
+            <Link href="/espaces" className="text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground">
+              Découvrir sans compte
             </Link>
           </div>
           <BandeTissee tonalite="or" className="mb-5 w-12" />
