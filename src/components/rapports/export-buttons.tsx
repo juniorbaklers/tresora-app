@@ -4,6 +4,7 @@ import { FileSpreadsheet, FileText, Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { exportCSV, exportWord } from "@/lib/export";
 import { formatDate, formatFCFA } from "@/lib/format";
+import type { StyleRapport } from "@/lib/types";
 
 interface Ligne {
   label: string;
@@ -20,6 +21,7 @@ interface LigneDetail {
 export function ExportButtons({
   espaceNom,
   periode,
+  style = "classique",
   recettes,
   depenses,
   totalRecettes,
@@ -29,6 +31,7 @@ export function ExportButtons({
 }: {
   espaceNom: string;
   periode: string;
+  style?: StyleRapport;
   recettes: Ligne[];
   depenses: Ligne[];
   totalRecettes: number;
@@ -83,7 +86,7 @@ export function ExportButtons({
       ${tableDetail("Détail des recettes", detailRecettes)}
       ${tableDetail("Détail des dépenses", detailDepenses)}
     `;
-    exportWord(`${slug}.doc`, `Rapport financier — ${espaceNom}`, html);
+    exportWord(`${slug}.doc`, `Rapport financier — ${espaceNom}`, html, style);
   }
 
   return (

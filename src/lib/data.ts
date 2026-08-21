@@ -11,6 +11,7 @@ import type {
   PaiementCotisation,
   PermissionRole,
   Recette,
+  Tranche,
 } from "./types";
 
 const PRENOMS = [
@@ -32,8 +33,9 @@ function initiales(prenom: string, nom: string) {
 function generateMembres(espaceId: string, count: number, startYear = 2022): Membre[] {
   const membres: Membre[] = [];
   for (let i = 0; i < count; i++) {
-    const prenom = PRENOMS[i % PRENOMS.length];
-    const nom = NOMS[(i * 7 + 3) % NOMS.length];
+    // Index toujours dans les bornes (modulo la taille des tableaux) : PRENOMS/NOMS ne sont jamais vides.
+    const prenom = PRENOMS[i % PRENOMS.length]!;
+    const nom = NOMS[(i * 7 + 3) % NOMS.length]!;
     const suffix = i >= PRENOMS.length ? ` ${Math.floor(i / PRENOMS.length) + 1}` : "";
     const mois = (i % 12) + 1;
     membres.push({
@@ -135,18 +137,37 @@ export const MEMBRES: Record<string, Membre[]> = {
   emmaus: generateMembres("emmaus", 60, 2023),
 };
 
-const emmausMembres = MEMBRES.emmaus;
+function tranchesUniques(montant: number, date: string, responsable: string, cle: string): Tranche[] {
+  if (montant <= 0) return [];
+  return [{ id: `t-${cle}-${date}`, date, montant, responsable }];
+}
+
+const emmausMembres = MEMBRES.emmaus!;
 const paiementsEmmaus: PaiementCotisation[] = emmausMembres.map((m, i) => {
   if (i < 36) {
-    return { membreId: m.id, montantDu: 2000, montantPaye: 2000, statut: "paye", dernierPaiement: "2026-08-14" };
+    return {
+      membreId: m.id,
+      montantDu: 2000,
+      montantPaye: 2000,
+      statut: "paye" as const,
+      dernierPaiement: "2026-08-14",
+      tranches: tranchesUniques(2000, "2026-08-14", "Jean Koffi", m.id),
+    };
   }
   if (i < 42) {
-    return { membreId: m.id, montantDu: 2000, montantPaye: 1000, statut: "partiel", dernierPaiement: "2026-08-09" };
+    return {
+      membreId: m.id,
+      montantDu: 2000,
+      montantPaye: 1000,
+      statut: "partiel" as const,
+      dernierPaiement: "2026-08-09",
+      tranches: tranchesUniques(1000, "2026-08-09", "Jean Koffi", m.id),
+    };
   }
   if (i < 47) {
-    return { membreId: m.id, montantDu: 2000, montantPaye: 0, statut: "en_retard" };
+    return { membreId: m.id, montantDu: 2000, montantPaye: 0, statut: "en_retard" as const, tranches: [] };
   }
-  return { membreId: m.id, montantDu: 2000, montantPaye: 0, statut: "impaye" };
+  return { membreId: m.id, montantDu: 2000, montantPaye: 0, statut: "impaye" as const, tranches: [] };
 });
 
 export const COTISATIONS: Cotisation[] = [
@@ -174,11 +195,13 @@ export const COTISATIONS: Cotisation[] = [
     dateLimite: "2026-07-31",
     responsable: "Jean Koffi",
     statut: "cloturee",
-    paiements: emmausMembres.map((m, i) => ({
+    paiements: emmausMembres.map((m, i): PaiementCotisation => ({
       membreId: m.id,
       montantDu: 2000,
       montantPaye: i < 52 ? 2000 : 0,
       statut: i < 52 ? "paye" : "impaye",
+      dernierPaiement: i < 52 ? "2026-07-20" : undefined,
+      tranches: i < 52 ? tranchesUniques(2000, "2026-07-20", "Jean Koffi", m.id) : [],
     })),
   },
 ];
@@ -401,9 +424,7 @@ export function cotisationStats(cotisation: Cotisation): CotisationStats {
   };
 }
 
-export function getDerniersPaiements(cotisationId: string, limit = 5) {
-  const cotisation = getCotisation(cotisationId);
-  if (!cotisation) return [];
+export function getDerniersPaiements(cotisation: Cotisation, limit = 5) {
   return cotisation.paiements
     .filter((p) => p.dernierPaiement)
     .sort((a, b) => (b.dernierPaiement ?? "").localeCompare(a.dernierPaiement ?? ""))

@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
 import { Bell, AlertCircle, CheckCircle2, ArrowLeftRight, HandCoins, CalendarDays, FileBarChart } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/format";
-import type { NotificationItem, TypeNotification } from "@/lib/types";
+import { useTresoraStore } from "@/lib/store";
+import { useNotificationsCombinees, useIdsRappelsActifs } from "@/lib/selecteurs";
+import type { TypeNotification } from "@/lib/types";
 
 const ICONS: Record<TypeNotification, typeof Bell> = {
   cotisation_retard: AlertCircle,
@@ -17,8 +18,11 @@ const ICONS: Record<TypeNotification, typeof Bell> = {
   rapport_disponible: FileBarChart,
 };
 
-export function NotificationBell({ notifications: initial, tone = "dark" }: { notifications: NotificationItem[]; tone?: "dark" | "light" }) {
-  const [notifications, setNotifications] = useState(initial);
+export function NotificationBell({ espaceId, tone = "dark" }: { espaceId: string; tone?: "dark" | "light" }) {
+  const notifications = useNotificationsCombinees(espaceId);
+  const idsRappelsActifs = useIdsRappelsActifs(espaceId);
+  const marquerNotificationLue = useTresoraStore((s) => s.marquerNotificationLue);
+  const marquerToutesLues = useTresoraStore((s) => s.marquerToutesLues);
   const nonLues = notifications.filter((n) => !n.lue).length;
 
   return (
@@ -43,7 +47,7 @@ export function NotificationBell({ notifications: initial, tone = "dark" }: { no
         <div className="flex items-center justify-between border-b border-border px-4 py-3">
           <p className="text-sm font-medium">Notifications</p>
           {nonLues > 0 && (
-            <Button variant="ghost" size="sm" className="h-auto p-0 text-xs" onClick={() => setNotifications((prev) => prev.map((n) => ({ ...n, lue: true })))}>
+            <Button variant="ghost" size="sm" className="h-auto p-0 text-xs" onClick={() => marquerToutesLues(espaceId, idsRappelsActifs)}>
               Tout marquer comme lu
             </Button>
           )}
@@ -56,7 +60,11 @@ export function NotificationBell({ notifications: initial, tone = "dark" }: { no
               {notifications.map((n) => {
                 const Icon = ICONS[n.type];
                 return (
-                  <li key={n.id} className={cn("flex gap-3 px-4 py-3", !n.lue && "bg-secondary/50")}>
+                  <li
+                    key={n.id}
+                    onClick={() => !n.lue && marquerNotificationLue(n.id)}
+                    className={cn("flex cursor-pointer gap-3 px-4 py-3", !n.lue && "bg-secondary/50")}
+                  >
                     <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-secondary text-muted-foreground">
                       <Icon className="h-4 w-4" strokeWidth={1.75} />
                     </span>

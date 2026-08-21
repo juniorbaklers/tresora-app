@@ -1,0 +1,16 @@
+{
+  "name": "Trésora — Gestion financière multi-espace",
+  "short_name": "Trésora",
+  "description": "La plateforme premium qui organise la trésorerie, les cotisations et les contributions de chaque espace : église, groupe ou association.",
+  "start_url": "/espaces",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#16203A",
+  "theme_color": "#16203A",
+  "lang": "fr",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

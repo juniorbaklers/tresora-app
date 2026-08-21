@@ -10,7 +10,7 @@ import { ThemeToggle } from "@/components/app-shell/theme-toggle";
 import { navForEspace } from "@/lib/nav";
 import { cn } from "@/lib/utils";
 import type { Espace } from "@/lib/types";
-import { UTILISATEUR, getNotifications } from "@/lib/data";
+import { UTILISATEUR } from "@/lib/data";
 
 export function Sidebar({ espace }: { espace: Espace }) {
   const pathname = usePathname();
@@ -58,7 +58,7 @@ export function Sidebar({ espace }: { espace: Espace }) {
 
       <div className="relative border-t border-white/[0.08] p-3">
         <div className="mb-1 flex items-center gap-1 px-1">
-          <NotificationBell notifications={getNotifications(espace.id)} tone="dark" />
+          <NotificationBell espaceId={espace.id} tone="dark" />
           <ThemeToggle tone="dark" />
         </div>
         <Link href="/compte" className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-[#9B937F] transition-colors hover:bg-white/[0.04] hover:text-[#F6F1E7]">

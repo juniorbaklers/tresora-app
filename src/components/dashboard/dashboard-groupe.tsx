@@ -1,49 +1,50 @@
+"use client";
+
 import Link from "next/link";
 import { TrendingUp, TrendingDown, Coins, AlertCircle, CalendarDays, ArrowLeftRight, CheckCircle2 } from "lucide-react";
 import { StatCard, SoldeHero } from "@/components/dashboard/stat-card";
+import { WidgetResume } from "@/components/dashboard/widget-resume";
 import { RecettesDepensesChart } from "@/components/dashboard/charts";
 import { OperationsRecentes } from "@/components/dashboard/operations-recentes";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import {
-  cotisationStats,
-  getContributionsRequisesA,
-  getCotisations,
-  getDerniersPaiements,
-  getEvenements,
-  soldeActuel,
-  totalDepenses,
-  totalRecettes,
-} from "@/lib/data";
-import { serieHebdomadaire } from "@/lib/charts";
+import { cotisationStats, getDerniersPaiements, getEvenements } from "@/lib/data";
+import { useCotisations, useContributionsRequisesA, useSoldeActuel, useTotalRecettes, useTotalDepenses, useRecettes, useDepenses } from "@/lib/selecteurs";
+import { serieHebdomadaireListe } from "@/lib/charts";
 import { formatFCFA, pct } from "@/lib/format";
 import { ContributionStatutBadge } from "@/components/contributions/statut-badge";
 import type { Espace } from "@/lib/types";
 
 export function DashboardGroupe({ espace }: { espace: Espace }) {
-  const cotisations = getCotisations(espace.id).filter((c) => c.statut === "active");
-  const cotisationActive = cotisations[0];
+  const cotisationActive = useCotisations(espace.id).find((c) => c.statut === "active");
   const stats = cotisationActive ? cotisationStats(cotisationActive) : null;
   const evenements = getEvenements(espace.id);
   const evenementsActifs = evenements.filter((e) => e.statut === "actif");
-  const contributionsRequises = getContributionsRequisesA(espace.id);
-  const derniersPaiements = cotisationActive ? getDerniersPaiements(cotisationActive.id, 5) : [];
+  const contributionsRequises = useContributionsRequisesA(espace.id);
+  const derniersPaiements = cotisationActive ? getDerniersPaiements(cotisationActive, 5) : [];
+  const recettes = useRecettes(espace.id);
+  const depenses = useDepenses(espace.id);
+  const solde = useSoldeActuel(espace.id);
+  const totalR = useTotalRecettes(espace.id);
+  const totalD = useTotalDepenses(espace.id);
 
   return (
     <div className="space-y-8">
       <div className="grid gap-4 lg:grid-cols-[1.6fr_1fr]">
         <SoldeHero
           label="Solde actuel"
-          montant={soldeActuel(espace.id)}
-          sub={`${formatFCFA(totalRecettes(espace.id))} de recettes et ${formatFCFA(totalDepenses(espace.id))} de dépenses ce mois-ci.`}
+          montant={solde}
+          sub={`${formatFCFA(totalR)} de recettes et ${formatFCFA(totalD)} de dépenses ce mois-ci.`}
         />
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-1">
-          <StatCard label="Recettes" value={formatFCFA(totalRecettes(espace.id))} icon={TrendingUp} accent="positive" index={0} />
-          <StatCard label="Dépenses" value={formatFCFA(totalDepenses(espace.id))} icon={TrendingDown} accent="negative" index={1} />
+          <StatCard label="Recettes" value={formatFCFA(totalR)} icon={TrendingUp} accent="positive" index={0} />
+          <StatCard label="Dépenses" value={formatFCFA(totalD)} icon={TrendingDown} accent="negative" index={1} />
         </div>
       </div>
+
+      <WidgetResume espaceId={espace.id} />
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-5">
         <StatCard
@@ -86,7 +87,7 @@ export function DashboardGroupe({ espace }: { espace: Espace }) {
             <CardTitle className="text-[15px] font-medium">Évolution financière — Août 2026</CardTitle>
           </CardHeader>
           <CardContent>
-            <RecettesDepensesChart data={serieHebdomadaire(espace.id)} />
+            <RecettesDepensesChart data={serieHebdomadaireListe(recettes, depenses)} />
           </CardContent>
         </Card>
 

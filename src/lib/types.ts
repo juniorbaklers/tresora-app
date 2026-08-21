@@ -47,12 +47,47 @@ export interface Membre {
   initiales: string;
 }
 
+/** Un versement isolé — une cotisation peut être réglée en plusieurs fois. */
+export interface Tranche {
+  id: string;
+  date: string;
+  montant: number;
+  responsable: string;
+}
+
 export interface PaiementCotisation {
   membreId: string;
   montantDu: number;
+  /** Somme des tranches — tenu à jour par le store à chaque versement. */
   montantPaye: number;
   statut: StatutPaiement;
   dernierPaiement?: string;
+  tranches: Tranche[];
+}
+
+/**
+ * Une correction apportée après coup à un montant ou un texte déjà enregistré.
+ * Toujours conservée intégralement (jamais écrasée) : c'est la trace qui
+ * protège contre une saisie malhonnête déguisée en « faute de frappe ».
+ */
+export interface Correction {
+  id: string;
+  date: string;
+  heure: string;
+  responsable: string;
+  raison: string;
+  champ: string;
+  ancienneValeur: string;
+  nouvelleValeur: string;
+}
+
+/** Rappel envoyé (ou programmé) à un membre pour une cotisation impayée. */
+export interface Rappel {
+  id: string;
+  cotisationId: string;
+  membreId: string;
+  date: string;
+  automatique: boolean;
 }
 
 export type Periodicite =
@@ -96,6 +131,7 @@ export interface Recette {
   libelle: string;
   responsable: string;
   commentaire?: string;
+  corrections?: Correction[];
 }
 
 export interface Depense {
@@ -110,6 +146,7 @@ export interface Depense {
   responsable: string;
   justificatif: boolean;
   evenementId?: string;
+  corrections?: Correction[];
 }
 
 export interface Evenement {
@@ -190,3 +227,5 @@ export interface PermissionRole {
   description: string;
   permissions: string[];
 }
+
+export type StyleRapport = "classique" | "moderne" | "compact";

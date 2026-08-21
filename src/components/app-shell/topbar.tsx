@@ -3,7 +3,6 @@
 import { EspaceSwitcher } from "@/components/app-shell/espace-switcher";
 import { NotificationBell } from "@/components/app-shell/notification-bell";
 import { ThemeToggle } from "@/components/app-shell/theme-toggle";
-import { getNotifications } from "@/lib/data";
 import type { Espace } from "@/lib/types";
 
 export function Topbar({ espace }: { espace: Espace }) {
@@ -13,7 +12,7 @@ export function Topbar({ espace }: { espace: Espace }) {
         <EspaceSwitcher espace={espace} tone="light" />
       </div>
       <ThemeToggle tone="light" />
-      <NotificationBell notifications={getNotifications(espace.id)} tone="light" />
+      <NotificationBell espaceId={espace.id} tone="light" />
     </header>
   );
 }

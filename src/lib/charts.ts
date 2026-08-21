@@ -31,27 +31,34 @@ export function filtrerParIntervalle<T extends { date: string }>(items: T[], deb
   return items.filter((item) => item.date >= debut && item.date <= fin);
 }
 
-export function serieHebdomadaire(espaceId: string) {
-  const recettes = getRecettes(espaceId);
-  const depenses = getDepenses(espaceId);
+export function serieHebdomadaireListe(recettes: Recette[], depenses: Depense[]) {
   const semaines = [1, 2, 3, 4].map((s) => ({
     semaine: `S${s}`,
     recettes: 0,
     depenses: 0,
   }));
-  for (const r of recettes) semaines[semaineDuMois(r.date) - 1].recettes += r.montant;
-  for (const d of depenses) semaines[semaineDuMois(d.date) - 1].depenses += d.montant;
+  // semaineDuMois() renvoie toujours 1 à 4, donc l'index est toujours dans les bornes du tableau.
+  for (const r of recettes) semaines[semaineDuMois(r.date) - 1]!.recettes += r.montant;
+  for (const d of depenses) semaines[semaineDuMois(d.date) - 1]!.depenses += d.montant;
   return semaines;
 }
 
-export function evolutionSolde(espaceId: string) {
-  const espace = getEspace(espaceId);
-  const serie = serieHebdomadaire(espaceId);
-  let solde = espace?.soldeInitial ?? 0;
+export function serieHebdomadaire(espaceId: string) {
+  return serieHebdomadaireListe(getRecettes(espaceId), getDepenses(espaceId));
+}
+
+export function evolutionSoldeListe(soldeInitial: number, recettes: Recette[], depenses: Depense[]) {
+  const serie = serieHebdomadaireListe(recettes, depenses);
+  let solde = soldeInitial;
   return serie.map((s) => {
     solde = solde + s.recettes - s.depenses;
     return { semaine: s.semaine, solde };
   });
+}
+
+export function evolutionSolde(espaceId: string) {
+  const espace = getEspace(espaceId);
+  return evolutionSoldeListe(espace?.soldeInitial ?? 0, getRecettes(espaceId), getDepenses(espaceId));
 }
 
 export const LABELS_CATEGORIE_RECETTE: Record<CategorieRecette, string> = {

@@ -1,11 +1,16 @@
+"use client";
+
 import { ArrowDownLeft, ArrowUpRight } from "lucide-react";
-import { getDepenses, getRecettes } from "@/lib/data";
+import { useRecettes, useDepenses } from "@/lib/selecteurs";
 import { formatDateCourte, formatFCFA } from "@/lib/format";
 import { LABELS_CATEGORIE_RECETTE } from "@/lib/charts";
 
 export function OperationsRecentes({ espaceId }: { espaceId: string }) {
+  const recettes = useRecettes(espaceId);
+  const depenses = useDepenses(espaceId);
+
   const operations = [
-    ...getRecettes(espaceId).map((r) => ({
+    ...recettes.map((r) => ({
       id: r.id,
       date: r.date,
       libelle: r.libelle ?? LABELS_CATEGORIE_RECETTE[r.categorie],
@@ -13,7 +18,7 @@ export function OperationsRecentes({ espaceId }: { espaceId: string }) {
       montant: r.montant,
       sens: "entree" as const,
     })),
-    ...getDepenses(espaceId).map((d) => ({
+    ...depenses.map((d) => ({
       id: d.id,
       date: d.date,
       libelle: d.description,

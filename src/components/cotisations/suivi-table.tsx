@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Search, CheckCircle2 } from "lucide-react";
+import { Search, CheckCircle2, History } from "lucide-react";
 import {
   Table,
   TableHeader,
@@ -28,15 +28,16 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { PaiementStatutBadge } from "@/components/cotisations/statut-badge";
-import { formatFCFA } from "@/lib/format";
-import type { Membre, PaiementCotisation, StatutPaiement } from "@/lib/types";
+import { useTresoraStore } from "@/lib/store";
+import { formatDate, formatFCFA } from "@/lib/format";
+import type { Membre, PaiementCotisation } from "@/lib/types";
 
 interface Ligne extends PaiementCotisation {
   membre: Membre;
 }
 
-export function SuiviTable({ paiements: initial, montant }: { paiements: Ligne[]; montant: number }) {
-  const [paiements, setPaiements] = useState(initial);
+export function SuiviTable({ cotisationId, paiements, montant }: { cotisationId: string; paiements: Ligne[]; montant: number }) {
+  const enregistrerPaiement = useTresoraStore((s) => s.enregistrerPaiement);
   const [recherche, setRecherche] = useState("");
   const [filtreStatut, setFiltreStatut] = useState<string>("tous");
   const [dialogMembreId, setDialogMembreId] = useState<string | null>(null);
@@ -52,22 +53,18 @@ export function SuiviTable({ paiements: initial, montant }: { paiements: Ligne[]
   }, [paiements, recherche, filtreStatut]);
 
   const ligneActive = paiements.find((p) => p.membreId === dialogMembreId);
+  const resteActif = ligneActive ? ligneActive.montantDu - ligneActive.montantPaye : montant;
 
   function ouvrirDialog(p: Ligne) {
     setDialogMembreId(p.membreId);
-    setMontantSaisi(String(p.montantPaye || montant));
+    setMontantSaisi(String(Math.max(0, p.montantDu - p.montantPaye)));
   }
 
   function enregistrer() {
-    if (!dialogMembreId) return;
-    const valeur = Math.max(0, Math.min(montant, Number(montantSaisi) || 0));
-    setPaiements((prev) =>
-      prev.map((p) => {
-        if (p.membreId !== dialogMembreId) return p;
-        const statut: StatutPaiement = valeur >= montant ? "paye" : valeur > 0 ? "partiel" : "impaye";
-        return { ...p, montantPaye: valeur, statut, dernierPaiement: new Date().toISOString().slice(0, 10) };
-      })
-    );
+    if (!dialogMembreId || !ligneActive) return;
+    const valeur = Math.max(0, Math.min(resteActif, Number(montantSaisi) || 0));
+    if (valeur <= 0) return;
+    enregistrerPaiement(cotisationId, dialogMembreId, valeur);
     setDialogMembreId(null);
   }
 
@@ -115,6 +112,11 @@ export function SuiviTable({ paiements: initial, montant }: { paiements: Ligne[]
                     <span className="min-w-0 truncate">
                       {p.membre.prenom} {p.membre.nom}
                     </span>
+                    {p.tranches.length > 1 && (
+                      <span className="flex shrink-0 items-center gap-1 rounded-full bg-secondary px-1.5 py-0.5 text-[10px] text-muted-foreground">
+                        <History className="h-2.5 w-2.5" />×{p.tranches.length}
+                      </span>
+                    )}
                   </div>
                 </TableCell>
                 <TableCell className="text-right font-tabular">{formatFCFA(p.montantDu)}</TableCell>
@@ -124,8 +126,8 @@ export function SuiviTable({ paiements: initial, montant }: { paiements: Ligne[]
                   <PaiementStatutBadge statut={p.statut} />
                 </TableCell>
                 <TableCell className="text-right">
-                  <Button variant="ghost" size="sm" onClick={() => ouvrirDialog(p)}>
-                    Enregistrer
+                  <Button variant="ghost" size="sm" onClick={() => ouvrirDialog(p)} disabled={p.statut === "paye" || p.statut === "exonere"}>
+                    Verser
                   </Button>
                 </TableCell>
               </TableRow>
@@ -137,14 +139,32 @@ export function SuiviTable({ paiements: initial, montant }: { paiements: Ligne[]
       <Dialog open={!!dialogMembreId} onOpenChange={(open) => !open && setDialogMembreId(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Enregistrer un paiement</DialogTitle>
+            <DialogTitle>Enregistrer un versement</DialogTitle>
             <DialogDescription>
-              {ligneActive?.membre.prenom} {ligneActive?.membre.nom} — montant dû : {formatFCFA(montant)}
+              {ligneActive?.membre.prenom} {ligneActive?.membre.nom} — reste {formatFCFA(resteActif)} sur {formatFCFA(montant)}
             </DialogDescription>
           </DialogHeader>
+
+          {ligneActive && ligneActive.tranches.length > 0 && (
+            <div className="rounded-lg bg-secondary/60 p-3">
+              <p className="mb-2 text-xs font-medium text-muted-foreground">Versements déjà reçus</p>
+              <ul className="space-y-1">
+                {ligneActive.tranches.map((t) => (
+                  <li key={t.id} className="flex items-center justify-between text-xs">
+                    <span className="text-muted-foreground">{formatDate(t.date)}</span>
+                    <span className="font-tabular">{formatFCFA(t.montant)}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           <div className="space-y-2 py-2">
-            <label className="text-sm font-medium">Montant reçu</label>
-            <Input type="number" value={montantSaisi} onChange={(e) => setMontantSaisi(e.target.value)} min={0} max={montant} />
+            <label className="text-sm font-medium">Montant de ce versement</label>
+            <Input type="number" value={montantSaisi} onChange={(e) => setMontantSaisi(e.target.value)} min={0} max={resteActif} />
+            <p className="text-xs text-muted-foreground">
+              La cotisation peut être réglée en plusieurs fois : ce versement s&apos;ajoute aux précédents.
+            </p>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDialogMembreId(null)}>
@@ -152,7 +172,7 @@ export function SuiviTable({ paiements: initial, montant }: { paiements: Ligne[]
             </Button>
             <Button onClick={enregistrer}>
               <CheckCircle2 className="h-4 w-4" />
-              Valider le paiement
+              Valider le versement
             </Button>
           </DialogFooter>
         </DialogContent>

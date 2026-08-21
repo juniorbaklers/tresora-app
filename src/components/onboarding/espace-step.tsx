@@ -24,8 +24,8 @@ const SUGGESTIONS: Record<string, string[]> = {
 export function EspaceStep() {
   const searchParams = useSearchParams();
   const type = searchParams.get("type") ?? "groupe";
-  const libelle = LIBELLES[type] ?? LIBELLES.autre;
-  const suggestions = SUGGESTIONS[type] ?? SUGGESTIONS.autre;
+  const libelle = LIBELLES[type] ?? LIBELLES.autre!;
+  const suggestions = SUGGESTIONS[type] ?? SUGGESTIONS.autre!;
 
   return (
     <OnboardingShell

@@ -1,5 +1,8 @@
+"use client";
+
 import { TrendingUp, TrendingDown, Landmark, HandCoins, ArrowLeftRight } from "lucide-react";
 import { StatCard, SoldeHero } from "@/components/dashboard/stat-card";
+import { WidgetResume } from "@/components/dashboard/widget-resume";
 import { RecettesDepensesChart, SoldeChart, RepartitionChart } from "@/components/dashboard/charts";
 import { OperationsRecentes } from "@/components/dashboard/operations-recentes";
 import { ContributionsAttendues } from "@/components/dashboard/contributions-attendues";
@@ -7,24 +10,30 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import {
-  getContributionsDemandeesPar,
-  getRecettes,
-  soldeActuel,
-  totalDepenses,
-  totalRecettes,
-} from "@/lib/data";
-import { depensesParCategorie, evolutionSolde, repartitionRecettes, serieHebdomadaire } from "@/lib/charts";
+  useContributionsDemandeesPar,
+  useRecettes,
+  useDepenses,
+  useSoldeActuel,
+  useTotalRecettes,
+  useTotalDepenses,
+} from "@/lib/selecteurs";
+import { depensesParCategorieListe, evolutionSoldeListe, repartitionRecettesListe, serieHebdomadaireListe } from "@/lib/charts";
 import { formatFCFA } from "@/lib/format";
 import type { Espace } from "@/lib/types";
 
 export function DashboardEglise({ espace }: { espace: Espace }) {
-  const recettes = getRecettes(espace.id);
+  const recettes = useRecettes(espace.id);
+  const depenses = useDepenses(espace.id);
   const dimes = recettes.filter((r) => r.categorie === "dime").reduce((s, r) => s + r.montant, 0);
   const offrandes = recettes
     .filter((r) => r.categorie === "offrande_ordinaire" || r.categorie === "offrande_speciale" || r.categorie === "offrande_culte_soir")
     .reduce((s, r) => s + r.montant, 0);
-  const contributionsRecues = getContributionsDemandeesPar(espace.id).reduce((s, c) => s + c.montantRecu, 0);
-  const contributions = getContributionsDemandeesPar(espace.id);
+  const contributions = useContributionsDemandeesPar(espace.id);
+  const contributionsRecues = contributions.reduce((s, c) => s + c.montantRecu, 0);
+  const solde = useSoldeActuel(espace.id);
+  const totalR = useTotalRecettes(espace.id);
+  const totalD = useTotalDepenses(espace.id);
+  const depensesCategorisees = depensesParCategorieListe(depenses);
 
   return (
     <div className="space-y-8">
@@ -32,14 +41,16 @@ export function DashboardEglise({ espace }: { espace: Espace }) {
       <div className="grid gap-4 lg:grid-cols-[1.6fr_1fr]">
         <SoldeHero
           label="Solde actuel"
-          montant={soldeActuel(espace.id)}
-          sub={`${formatFCFA(totalRecettes(espace.id))} de recettes et ${formatFCFA(totalDepenses(espace.id))} de dépenses ce mois-ci.`}
+          montant={solde}
+          sub={`${formatFCFA(totalR)} de recettes et ${formatFCFA(totalD)} de dépenses ce mois-ci.`}
         />
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-1">
-          <StatCard label="Recettes du mois" value={formatFCFA(totalRecettes(espace.id))} icon={TrendingUp} accent="positive" index={0} />
-          <StatCard label="Dépenses du mois" value={formatFCFA(totalDepenses(espace.id))} icon={TrendingDown} accent="negative" index={1} />
+          <StatCard label="Recettes du mois" value={formatFCFA(totalR)} icon={TrendingUp} accent="positive" index={0} />
+          <StatCard label="Dépenses du mois" value={formatFCFA(totalD)} icon={TrendingDown} accent="negative" index={1} />
         </div>
       </div>
+
+      <WidgetResume espaceId={espace.id} />
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
         <StatCard label="Dîmes" value={formatFCFA(dimes)} icon={Landmark} accent="gold" index={2} />
@@ -53,7 +64,7 @@ export function DashboardEglise({ espace }: { espace: Espace }) {
             <CardTitle className="text-[15px] font-medium">Recettes et dépenses — Août 2026</CardTitle>
           </CardHeader>
           <CardContent>
-            <RecettesDepensesChart data={serieHebdomadaire(espace.id)} />
+            <RecettesDepensesChart data={serieHebdomadaireListe(recettes, depenses)} />
           </CardContent>
         </Card>
         <Card className="ledger-card">
@@ -61,7 +72,7 @@ export function DashboardEglise({ espace }: { espace: Espace }) {
             <CardTitle className="text-[15px] font-medium">Évolution du solde</CardTitle>
           </CardHeader>
           <CardContent>
-            <SoldeChart data={evolutionSolde(espace.id)} />
+            <SoldeChart data={evolutionSoldeListe(espace.soldeInitial, recettes, depenses)} />
           </CardContent>
         </Card>
       </div>
@@ -72,7 +83,7 @@ export function DashboardEglise({ espace }: { espace: Espace }) {
             <CardTitle className="text-[15px] font-medium">Répartition des recettes</CardTitle>
           </CardHeader>
           <CardContent>
-            <RepartitionChart data={repartitionRecettes(espace.id)} />
+            <RepartitionChart data={repartitionRecettesListe(recettes)} />
           </CardContent>
         </Card>
         <Card className="ledger-card">
@@ -81,7 +92,7 @@ export function DashboardEglise({ espace }: { espace: Espace }) {
           </CardHeader>
           <CardContent>
             <ul className="space-y-3">
-              {depensesParCategorie(espace.id).map((d) => (
+              {depensesCategorisees.map((d) => (
                 <li key={d.categorie}>
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-muted-foreground">{d.categorie}</span>
@@ -90,7 +101,7 @@ export function DashboardEglise({ espace }: { espace: Espace }) {
                   <div className="mt-1.5 h-1.5 w-full rounded-full bg-muted">
                     <div
                       className="h-1.5 rounded-full"
-                      style={{ width: `${(d.montant / depensesParCategorie(espace.id)[0].montant) * 100}%`, backgroundColor: d.couleur }}
+                      style={{ width: `${(d.montant / depensesCategorisees[0]!.montant) * 100}%`, backgroundColor: d.couleur }}
                     />
                   </div>
                 </li>

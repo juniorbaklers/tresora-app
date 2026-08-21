@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { SlidersHorizontal } from "lucide-react";
+import { SlidersHorizontal, Palette } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,9 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import { ExportButtons } from "@/components/rapports/export-buttons";
 import { PageHeader } from "@/components/app-shell/page-header";
+import { cn } from "@/lib/utils";
+import { useStyleRapport } from "@/lib/selecteurs";
+import { useTresoraStore } from "@/lib/store";
 import {
   PERIODES_RAPPORT,
   depensesParCategorieListe,
@@ -21,12 +24,56 @@ import {
   type PeriodeRapport,
 } from "@/lib/charts";
 import { formatDate, formatFCFA } from "@/lib/format";
-import type { CategorieRecette, Depense, Espace, Recette } from "@/lib/types";
+import type { CategorieRecette, Depense, Espace, Recette, StyleRapport } from "@/lib/types";
+
+const LABELS_STYLE: Record<StyleRapport, string> = {
+  classique: "Classique",
+  moderne: "Moderne",
+  compact: "Compact",
+};
+
+const STYLE_CARTE: Record<StyleRapport, string> = {
+  classique: "",
+  moderne: "border-t-4 border-t-gold shadow-lg shadow-gold/5",
+  compact: "",
+};
+
+const STYLE_TITRE: Record<StyleRapport, string> = {
+  classique: "text-[15px] font-medium",
+  moderne: "text-[13px] font-semibold uppercase tracking-wide text-gold",
+  compact: "text-[13px] font-medium",
+};
+
+const STYLE_LIGNE: Record<StyleRapport, string> = {
+  classique: "flex items-center justify-between py-2.5 text-sm",
+  moderne: "flex items-center justify-between rounded-lg px-3 py-2.5 text-sm odd:bg-secondary/50",
+  compact: "flex items-center justify-between py-1 text-xs",
+};
+
+const STYLE_SOLDE: Record<StyleRapport, string> = {
+  classique: "font-heading text-[19px]",
+  moderne: "font-heading text-[22px] font-semibold text-gold",
+  compact: "text-[15px] font-medium",
+};
+
+const STYLE_SOLDE_MONTANT: Record<StyleRapport, string> = {
+  classique: "font-tabular text-[22px] font-medium text-gold",
+  moderne: "font-tabular bg-gradient-to-r from-gold to-amber-400 bg-clip-text text-[26px] font-bold text-transparent",
+  compact: "font-tabular text-[16px] font-medium text-gold",
+};
+
+const STYLE_CELLULE: Record<StyleRapport, string> = {
+  classique: "",
+  moderne: "",
+  compact: "p-1.5 text-xs",
+};
 
 export function RapportView({ espace, recettes, depenses }: { espace: Espace; recettes: Recette[]; depenses: Depense[] }) {
   const [periode, setPeriode] = useState<PeriodeRapport>("M1");
   const [debutPerso, setDebutPerso] = useState("2026-08-01");
   const [finPerso, setFinPerso] = useState("2026-08-31");
+  const styleRapport = useStyleRapport();
+  const setStyleRapport = useTresoraStore((s) => s.setStyleRapport);
 
   const categoriesRecetteDisponibles = useMemo(
     () => Array.from(new Set(recettes.map((r) => r.categorie))) as CategorieRecette[],
@@ -92,6 +139,7 @@ export function RapportView({ espace, recettes, depenses }: { espace: Espace; re
           <ExportButtons
             espaceNom={espace.nom}
             periode={periodeLabel}
+            style={styleRapport}
             recettes={repartitionR.map((r) => ({ label: r.label, montant: r.montant }))}
             depenses={repartitionD.map((d) => ({ label: d.categorie, montant: d.montant }))}
             totalRecettes={totalR}
@@ -142,6 +190,23 @@ export function RapportView({ espace, recettes, depenses }: { espace: Espace; re
           </>
         )}
 
+        <div className="w-full max-w-[9.5rem] print:hidden">
+          <Label className="mb-2 block text-xs text-muted-foreground">Design</Label>
+          <Select value={styleRapport} onValueChange={(v) => setStyleRapport(v as StyleRapport)}>
+            <SelectTrigger className="w-full">
+              <Palette className="h-3.5 w-3.5 text-muted-foreground" />
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {(Object.keys(LABELS_STYLE) as StyleRapport[]).map((s) => (
+                <SelectItem key={s} value={s}>
+                  {LABELS_STYLE[s]}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
         <Popover>
           <PopoverTrigger asChild>
             <Button variant="outline">
@@ -183,17 +248,17 @@ export function RapportView({ espace, recettes, depenses }: { espace: Espace; re
         </Card>
       ) : (
         <>
-          <Card className="ledger-card mb-4">
+          <Card className={cn("ledger-card mb-4", STYLE_CARTE[styleRapport])}>
             <CardHeader>
-              <CardTitle className="text-[15px] font-medium">Recettes</CardTitle>
+              <CardTitle className={STYLE_TITRE[styleRapport]}>Recettes</CardTitle>
             </CardHeader>
             <CardContent>
               {repartitionR.length === 0 ? (
                 <p className="py-2 text-sm text-muted-foreground">Aucune recette pour ce filtre.</p>
               ) : (
-                <ul className="divide-y divide-ledger-line">
+                <ul className={cn(styleRapport !== "moderne" && "divide-y divide-ledger-line")}>
                   {repartitionR.map((r) => (
-                    <li key={r.categorie} className="flex items-center justify-between py-2.5 text-sm">
+                    <li key={r.categorie} className={STYLE_LIGNE[styleRapport]}>
                       <span className="text-muted-foreground">{r.label}</span>
                       <span className="font-tabular">{formatFCFA(r.montant)}</span>
                     </li>
@@ -223,10 +288,10 @@ export function RapportView({ espace, recettes, depenses }: { espace: Espace; re
                   <TableBody>
                     {recettesFiltrees.map((r) => (
                       <TableRow key={r.id}>
-                        <TableCell className="whitespace-nowrap text-muted-foreground">{formatDate(r.date)}</TableCell>
-                        <TableCell className="font-medium">{r.libelle}</TableCell>
-                        <TableCell className="text-muted-foreground">{LABELS_CATEGORIE_RECETTE[r.categorie]}</TableCell>
-                        <TableCell className="text-right font-tabular text-positive">+{formatFCFA(r.montant)}</TableCell>
+                        <TableCell className={cn("whitespace-nowrap text-muted-foreground", STYLE_CELLULE[styleRapport])}>{formatDate(r.date)}</TableCell>
+                        <TableCell className={cn("font-medium", STYLE_CELLULE[styleRapport])}>{r.libelle}</TableCell>
+                        <TableCell className={cn("text-muted-foreground", STYLE_CELLULE[styleRapport])}>{LABELS_CATEGORIE_RECETTE[r.categorie]}</TableCell>
+                        <TableCell className={cn("text-right font-tabular text-positive", STYLE_CELLULE[styleRapport])}>+{formatFCFA(r.montant)}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -235,17 +300,17 @@ export function RapportView({ espace, recettes, depenses }: { espace: Espace; re
             </div>
           )}
 
-          <Card className="ledger-card mb-4">
+          <Card className={cn("ledger-card mb-4", STYLE_CARTE[styleRapport])}>
             <CardHeader>
-              <CardTitle className="text-[15px] font-medium">Dépenses</CardTitle>
+              <CardTitle className={STYLE_TITRE[styleRapport]}>Dépenses</CardTitle>
             </CardHeader>
             <CardContent>
               {repartitionD.length === 0 ? (
                 <p className="py-2 text-sm text-muted-foreground">Aucune dépense pour ce filtre.</p>
               ) : (
-                <ul className="divide-y divide-ledger-line">
+                <ul className={cn(styleRapport !== "moderne" && "divide-y divide-ledger-line")}>
                   {repartitionD.map((d) => (
-                    <li key={d.categorie} className="flex items-center justify-between py-2.5 text-sm">
+                    <li key={d.categorie} className={STYLE_LIGNE[styleRapport]}>
                       <span className="text-muted-foreground">{d.categorie}</span>
                       <span className="font-tabular">{formatFCFA(d.montant)}</span>
                     </li>
@@ -275,10 +340,10 @@ export function RapportView({ espace, recettes, depenses }: { espace: Espace; re
                   <TableBody>
                     {depensesFiltrees.map((d) => (
                       <TableRow key={d.id}>
-                        <TableCell className="whitespace-nowrap text-muted-foreground">{formatDate(d.date)}</TableCell>
-                        <TableCell className="font-medium">{d.description}</TableCell>
-                        <TableCell className="text-muted-foreground">{d.categorie}</TableCell>
-                        <TableCell className="text-right font-tabular text-destructive">-{formatFCFA(d.montant)}</TableCell>
+                        <TableCell className={cn("whitespace-nowrap text-muted-foreground", STYLE_CELLULE[styleRapport])}>{formatDate(d.date)}</TableCell>
+                        <TableCell className={cn("font-medium", STYLE_CELLULE[styleRapport])}>{d.description}</TableCell>
+                        <TableCell className={cn("text-muted-foreground", STYLE_CELLULE[styleRapport])}>{d.categorie}</TableCell>
+                        <TableCell className={cn("text-right font-tabular text-destructive", STYLE_CELLULE[styleRapport])}>-{formatFCFA(d.montant)}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -287,10 +352,10 @@ export function RapportView({ espace, recettes, depenses }: { espace: Espace; re
             </div>
           )}
 
-          <Card className="ledger-card">
+          <Card className={cn("ledger-card", STYLE_CARTE[styleRapport])}>
             <CardContent className="flex items-center justify-between py-5">
-              <span className="font-heading text-[19px]">Solde net</span>
-              <span className="font-tabular text-[22px] font-medium text-gold">{formatFCFA(soldeNet)}</span>
+              <span className={STYLE_SOLDE[styleRapport]}>Solde net</span>
+              <span className={STYLE_SOLDE_MONTANT[styleRapport]}>{formatFCFA(soldeNet)}</span>
             </CardContent>
           </Card>
         </>
