@@ -29,12 +29,12 @@ export function StatCard({
   accent?: Accent;
 }) {
   return (
-    <div className="group rounded-xl border border-border bg-card p-5 transition-colors hover:border-gold/50">
+    <div className="group rounded-xl border border-border bg-card p-5 shadow-[0_1px_2px_rgba(27,35,56,0.04),0_10px_28px_-16px_rgba(27,35,56,0.16)] transition-colors hover:border-gold/50">
       <BandeTissee tonalite={TONALITE[accent]} className="mb-4 w-10" />
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <p className="text-xs text-muted-foreground">{label}</p>
-          <p className="mt-1.5 font-tabular text-[21px] font-medium leading-none">{value}</p>
+          <p className="mt-1.5 font-stat text-[24px] font-bold leading-none">{value}</p>
           {sub && <p className="mt-2 text-xs text-muted-foreground">{sub}</p>}
         </div>
         <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-secondary text-muted-foreground transition-colors group-hover:bg-gold/15 group-hover:text-gold-foreground">

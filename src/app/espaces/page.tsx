@@ -44,7 +44,7 @@ export default function EspacesPage() {
             <Link
               key={e.id}
               href={`/espace/${e.id}/dashboard`}
-              className="group flex flex-col justify-between overflow-hidden rounded-xl border border-border bg-card transition-colors hover:border-gold"
+              className="group flex flex-col justify-between overflow-hidden rounded-xl border border-border bg-card shadow-[0_1px_2px_rgba(27,35,56,0.04),0_10px_28px_-16px_rgba(27,35,56,0.16)] transition-colors hover:border-gold"
             >
               <BandeTissee tonalite={e.type === "eglise" ? "mixte" : "or"} className="rounded-none" epaisseur={4} />
               <div className="flex flex-1 flex-col justify-between p-6">

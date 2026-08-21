@@ -52,7 +52,7 @@ export default async function CotisationsPage(props: PageProps<"/espace/[espaceI
               <Link
                 key={c.id}
                 href={`/espace/${espaceId}/cotisations/${c.id}`}
-                className="group flex flex-col rounded-xl border border-border bg-card p-5 transition-colors hover:border-gold"
+                className="group flex flex-col rounded-xl border border-border bg-card shadow-[0_1px_2px_rgba(27,35,56,0.04),0_10px_28px_-16px_rgba(27,35,56,0.16)] p-5 transition-colors hover:border-gold"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>

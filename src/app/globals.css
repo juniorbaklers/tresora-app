@@ -94,7 +94,9 @@
   --chart-3: #2E4374;
   --chart-4: #B34A24;
   --chart-5: #9A8B70;
-  --radius: 0.5rem;
+  /* 12px — radius plus plein, cartes et champs moins « ligne comptable »,
+     plus proches d'un logiciel qu'on a envie de toucher. */
+  --radius: 0.75rem;
   --sidebar: #16203A;
   --sidebar-foreground: #DCD3C2;
   --sidebar-primary: #E0A33E;
@@ -170,6 +172,17 @@
   .font-heading {
     font-family: var(--font-fraunces);
     letter-spacing: -0.015em;
+  }
+  /*
+    Chiffre vedette isolé (carte de statistique, indicateur) : sans plein et
+    engraissé plutôt que mono. Le mono (.font-tabular ci-dessous) reste réservé
+    aux colonnes de montants alignés, où la largeur fixe des chiffres compte
+    plus que la personnalité.
+  */
+  .font-stat {
+    font-family: var(--font-jakarta);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.03em;
   }
   .font-tabular {
     font-family: var(--font-plex-mono);

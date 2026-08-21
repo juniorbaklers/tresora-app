@@ -41,7 +41,7 @@ export default function OnboardingTypePage() {
           <Link
             key={o.type}
             href={`/onboarding/espace?type=${o.type}`}
-            className="group flex flex-col gap-4 rounded-xl border border-border bg-card p-6 transition-colors hover:border-gold"
+            className="group flex flex-col gap-4 rounded-xl border border-border bg-card shadow-[0_1px_2px_rgba(27,35,56,0.04),0_10px_28px_-16px_rgba(27,35,56,0.16)] p-6 transition-colors hover:border-gold"
           >
             <div className="flex items-center justify-between">
               <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-secondary text-foreground">

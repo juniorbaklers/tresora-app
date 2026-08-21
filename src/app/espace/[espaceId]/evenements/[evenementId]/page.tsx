@@ -31,7 +31,7 @@ export default async function EvenementDetailPage(props: PageProps<"/espace/[esp
       </p>
 
       {evenement.montantCible && (
-        <div className="mb-8 rounded-xl border border-border bg-card p-6">
+        <div className="mb-8 rounded-xl border border-border bg-card shadow-[0_1px_2px_rgba(27,35,56,0.04),0_10px_28px_-16px_rgba(27,35,56,0.16)] p-6">
           <div className="flex items-center justify-between">
             <p className="text-sm text-muted-foreground">Progression financière</p>
             <span className="font-tabular text-sm text-muted-foreground">
