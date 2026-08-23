@@ -25,7 +25,7 @@ export default function EspacesPage() {
           <Link href="/espaces" aria-label="Accueil Trésora">
             <Logo />
           </Link>
-          <CompteMenu nom={UTILISATEUR.nom} initiales={UTILISATEUR.initiales} />
+          <CompteMenu />
         </div>
       </header>
 

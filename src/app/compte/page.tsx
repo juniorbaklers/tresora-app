@@ -3,7 +3,6 @@ import { ArrowLeft } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
 import { CompteMenu } from "@/components/app-shell/compte-menu";
 import { CompteForm } from "@/components/compte/compte-form";
-import { UTILISATEUR } from "@/lib/data";
 
 export default function ComptePage() {
   return (
@@ -13,7 +12,7 @@ export default function ComptePage() {
           <Link href="/espaces" aria-label="Accueil Trésora">
             <Logo />
           </Link>
-          <CompteMenu nom={UTILISATEUR.nom} initiales={UTILISATEUR.initiales} />
+          <CompteMenu />
         </div>
       </header>
 

@@ -6,8 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useTresoraStore } from "@/lib/store";
+import type { DeviseCode } from "@/lib/types";
 
-const DEVISES = [
+const DEVISES: { value: DeviseCode; label: string }[] = [
   { value: "XOF", label: "FCFA — XOF (Afrique de l'Ouest)" },
   { value: "XAF", label: "FCFA — XAF (Afrique centrale)" },
   { value: "GHS", label: "Cedi ghanéen — GHS" },
@@ -15,19 +17,27 @@ const DEVISES = [
   { value: "USD", label: "Dollar américain — USD" },
 ];
 
-export function InformationsGeneralesForm({ nom }: { nom: string }) {
-  const [devise, setDevise] = useState("XOF");
+export function InformationsGeneralesForm({ espaceId, nom, devise }: { espaceId: string; nom: string; devise: DeviseCode }) {
+  const mettreAJourEspace = useTresoraStore((s) => s.mettreAJourEspace);
+  const [nomLocal, setNomLocal] = useState(nom);
+  const [deviseLocale, setDeviseLocale] = useState<DeviseCode>(devise);
   const [enregistre, setEnregistre] = useState(false);
+
+  function onEnregistrer() {
+    mettreAJourEspace(espaceId, { nom: nomLocal.trim() || nom, devise: deviseLocale });
+    setEnregistre(true);
+    setTimeout(() => setEnregistre(false), 2000);
+  }
 
   return (
     <div className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="nom">Nom de l&apos;espace</Label>
-        <Input id="nom" defaultValue={nom} />
+        <Input id="nom" value={nomLocal} onChange={(e) => setNomLocal(e.target.value)} />
       </div>
       <div className="space-y-2">
         <Label>Devise</Label>
-        <Select value={devise} onValueChange={setDevise}>
+        <Select value={deviseLocale} onValueChange={(v) => setDeviseLocale(v as DeviseCode)}>
           <SelectTrigger className="w-full">
             <SelectValue />
           </SelectTrigger>
@@ -39,13 +49,13 @@ export function InformationsGeneralesForm({ nom }: { nom: string }) {
             ))}
           </SelectContent>
         </Select>
-        {devise !== "XOF" && (
+        {deviseLocale !== "XOF" && (
           <p className="text-xs text-muted-foreground">
             Cette démo affiche toujours les montants en FCFA — la conversion complète arrivera avec la prochaine version.
           </p>
         )}
       </div>
-      <Button size="sm" onClick={() => setEnregistre(true)}>
+      <Button size="sm" onClick={onEnregistrer}>
         {enregistre ? (
           <>
             <CheckCircle2 className="h-4 w-4" />

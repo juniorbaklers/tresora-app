@@ -435,6 +435,7 @@ export function getDerniersPaiements(cotisation: Cotisation, limit = 5) {
 export const UTILISATEUR = {
   nom: "Jean Koffi",
   email: "jean.koffi@example.ci",
+  telephone: "+225 07 89 48 22 86",
   initiales: "JK",
 };
 

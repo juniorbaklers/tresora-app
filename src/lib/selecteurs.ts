@@ -5,7 +5,7 @@ import { useShallow } from "zustand/react/shallow";
 import { useTresoraStore } from "./store";
 import { getEspace } from "./data";
 import { calculerRappelsDus, formatDelai, idRappel } from "./rappels";
-import type { NotificationItem } from "./types";
+import type { NotificationItem, Espace } from "./types";
 
 export function useCotisations(espaceId: string) {
   return useTresoraStore(useShallow((s) => s.cotisations.filter((c) => c.espaceId === espaceId)));
@@ -105,4 +105,23 @@ export function useIdsRappelsActifs(espaceId: string): string[] {
 
 export function useStyleRapport() {
   return useTresoraStore((s) => s.styleRapport);
+}
+
+export function useUtilisateur() {
+  return useTresoraStore((s) => s.utilisateur);
+}
+
+/**
+ * Espace de base (statique, résolu côté serveur) fusionné avec les
+ * corrections enregistrées dans le store (nom, devise, modules) : c'est cette
+ * version qu'il faut afficher partout où l'espace peut avoir été modifié
+ * depuis l'écran Paramètres.
+ */
+export function useEspaceEffectif(base: Espace): Espace {
+  const override = useTresoraStore((s) => s.espaceOverrides[base.id]);
+  return useMemo(() => (override ? { ...base, ...override } : base), [base, override]);
+}
+
+export function useInvitations(espaceId: string) {
+  return useTresoraStore(useShallow((s) => s.invitations.filter((i) => i.espaceId === espaceId)));
 }

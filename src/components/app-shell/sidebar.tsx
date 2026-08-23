@@ -9,12 +9,14 @@ import { NotificationBell } from "@/components/app-shell/notification-bell";
 import { ThemeToggle } from "@/components/app-shell/theme-toggle";
 import { navForEspace } from "@/lib/nav";
 import { cn } from "@/lib/utils";
+import { useUtilisateur } from "@/lib/selecteurs";
+import { initialesDeNom } from "@/lib/format";
 import type { Espace } from "@/lib/types";
-import { UTILISATEUR } from "@/lib/data";
 
 export function Sidebar({ espace }: { espace: Espace }) {
   const pathname = usePathname();
   const items = navForEspace(espace);
+  const utilisateur = useUtilisateur();
 
   return (
     <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col overflow-hidden bg-[var(--indigo-deep)] lg:flex">
@@ -63,10 +65,10 @@ export function Sidebar({ espace }: { espace: Espace }) {
         </div>
         <Link href="/compte" className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-[#9B937F] transition-colors hover:bg-white/[0.04] hover:text-[#F6F1E7]">
           <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1F2B4A] text-xs font-medium text-[#F6F1E7]">
-            {UTILISATEUR.initiales}
+            {initialesDeNom(utilisateur.nom)}
           </span>
           <span className="text-left">
-            <span className="block text-[13px] font-medium text-[#F6F1E7]">{UTILISATEUR.nom}</span>
+            <span className="block text-[13px] font-medium text-[#F6F1E7]">{utilisateur.nom}</span>
             <span className="block text-[11px] text-[#9B937F]">Voir le profil</span>
           </span>
         </Link>

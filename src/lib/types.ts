@@ -19,17 +19,26 @@ export type Role =
   | "responsable"
   | "membre";
 
+export type DeviseCode = "XOF" | "XAF" | "GHS" | "EUR" | "USD";
+
 export interface Espace {
   id: string;
   nom: string;
   type: EspaceType;
   initiales: string;
   couleur: string; // classe tailwind bg-*
-  devise: "XOF";
+  devise: DeviseCode;
   modules: ModuleKey[];
   soldeInitial: number;
   role: Role; // rôle de l'utilisateur courant dans cet espace
   membresCount: number;
+}
+
+export interface Invitation {
+  id: string;
+  espaceId: string;
+  email: string;
+  date: string;
 }
 
 export type StatutPaiement = "paye" | "partiel" | "impaye" | "en_retard" | "exonere";

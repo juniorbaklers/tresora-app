@@ -25,6 +25,9 @@ import type {
   StatutContribution,
   StyleRapport,
   Correction,
+  DeviseCode,
+  ModuleKey,
+  Invitation,
 } from "./types";
 
 function idCourt(prefixe: string): string {
@@ -55,6 +58,20 @@ export function calculerStatutPaiement(montantPaye: number, montantDu: number): 
   return "partiel";
 }
 
+export interface EspaceOverride {
+  nom?: string;
+  devise?: DeviseCode;
+  modules?: ModuleKey[];
+}
+
+export interface UtilisateurState {
+  nom: string;
+  email: string;
+  telephone: string;
+  deuxFA: boolean;
+  motDePasseMisAJourLe: string;
+}
+
 interface TresoraState {
   cotisations: Cotisation[];
   recettes: Record<string, Recette[]>;
@@ -65,6 +82,9 @@ interface TresoraState {
   notifications: NotificationItem[];
   rappelsLusIds: string[];
   styleRapport: StyleRapport;
+  utilisateur: UtilisateurState;
+  espaceOverrides: Record<string, EspaceOverride>;
+  invitations: Invitation[];
 
   enregistrerPaiement: (cotisationId: string, membreId: string, montant: number, responsable?: string) => void;
   corrigerRecette: (
@@ -90,6 +110,11 @@ interface TresoraState {
   marquerNotificationLue: (id: string) => void;
   marquerToutesLues: (espaceId: string, idsRappelsActifs?: string[]) => void;
   setStyleRapport: (style: StyleRapport) => void;
+  mettreAJourUtilisateur: (patch: Partial<Pick<UtilisateurState, "nom" | "email" | "telephone">>) => void;
+  toggleDeuxFA: () => void;
+  changerMotDePasse: () => void;
+  mettreAJourEspace: (espaceId: string, patch: EspaceOverride) => void;
+  inviterUtilisateur: (espaceId: string, email: string) => void;
   reinitialiser: () => void;
 }
 
@@ -103,6 +128,15 @@ const etatInitial = {
   notifications: NOTIFICATIONS,
   rappelsLusIds: [] as string[],
   styleRapport: "classique" as StyleRapport,
+  utilisateur: {
+    nom: UTILISATEUR.nom,
+    email: UTILISATEUR.email,
+    telephone: UTILISATEUR.telephone,
+    deuxFA: false,
+    motDePasseMisAJourLe: "2026-05-21",
+  } as UtilisateurState,
+  espaceOverrides: {} as Record<string, EspaceOverride>,
+  invitations: [] as Invitation[],
 };
 
 export const useTresoraStore = create<TresoraState>()(
@@ -318,6 +352,27 @@ export const useTresoraStore = create<TresoraState>()(
         })),
 
       setStyleRapport: (style) => set({ styleRapport: style }),
+
+      mettreAJourUtilisateur: (patch) => set((state) => ({ utilisateur: { ...state.utilisateur, ...patch } })),
+
+      toggleDeuxFA: () => set((state) => ({ utilisateur: { ...state.utilisateur, deuxFA: !state.utilisateur.deuxFA } })),
+
+      changerMotDePasse: () => {
+        const { date } = maintenant();
+        set((state) => ({ utilisateur: { ...state.utilisateur, motDePasseMisAJourLe: date } }));
+      },
+
+      mettreAJourEspace: (espaceId, patch) =>
+        set((state) => ({
+          espaceOverrides: { ...state.espaceOverrides, [espaceId]: { ...state.espaceOverrides[espaceId], ...patch } },
+        })),
+
+      inviterUtilisateur: (espaceId, email) => {
+        const { date } = maintenant();
+        set((state) => ({
+          invitations: [...state.invitations, { id: idCourt("inv"), espaceId, email, date }],
+        }));
+      },
 
       reinitialiser: () => set(etatInitial),
     }),

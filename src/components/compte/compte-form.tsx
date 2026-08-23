@@ -7,11 +7,37 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { UTILISATEUR } from "@/lib/data";
+import { useUtilisateur } from "@/lib/selecteurs";
+import { useTresoraStore } from "@/lib/store";
+import { formatDate } from "@/lib/format";
 
 export function CompteForm() {
-  const [deuxFA, setDeuxFA] = useState(false);
+  const utilisateur = useUtilisateur();
+  const mettreAJourUtilisateur = useTresoraStore((s) => s.mettreAJourUtilisateur);
+  const toggleDeuxFA = useTresoraStore((s) => s.toggleDeuxFA);
+  const changerMotDePasse = useTresoraStore((s) => s.changerMotDePasse);
+
+  const [prenom, setPrenom] = useState(utilisateur.nom.split(" ")[0] ?? "");
+  const [nomFamille, setNomFamille] = useState(utilisateur.nom.split(" ").slice(1).join(" "));
+  const [email, setEmail] = useState(utilisateur.email);
+  const [telephone, setTelephone] = useState(utilisateur.telephone);
+  const [enregistre, setEnregistre] = useState(false);
+
   const [motDePasseChange, setMotDePasseChange] = useState(false);
+  const [motDePasseMisAJour, setMotDePasseMisAJour] = useState(false);
+
+  function onEnregistrer() {
+    mettreAJourUtilisateur({ nom: `${prenom} ${nomFamille}`.trim(), email, telephone });
+    setEnregistre(true);
+    setTimeout(() => setEnregistre(false), 2000);
+  }
+
+  function onMettreAJourMotDePasse() {
+    changerMotDePasse();
+    setMotDePasseChange(false);
+    setMotDePasseMisAJour(true);
+    setTimeout(() => setMotDePasseMisAJour(false), 2500);
+  }
 
   return (
     <div className="space-y-6">
@@ -23,18 +49,31 @@ export function CompteForm() {
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="prenom">Prénom</Label>
-              <Input id="prenom" defaultValue={UTILISATEUR.nom.split(" ")[0]} />
+              <Input id="prenom" value={prenom} onChange={(e) => setPrenom(e.target.value)} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="nom">Nom</Label>
-              <Input id="nom" defaultValue={UTILISATEUR.nom.split(" ")[1]} />
+              <Input id="nom" value={nomFamille} onChange={(e) => setNomFamille(e.target.value)} />
             </div>
           </div>
           <div className="space-y-2">
             <Label htmlFor="email">Adresse email</Label>
-            <Input id="email" type="email" defaultValue={UTILISATEUR.email} />
+            <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
           </div>
-          <Button size="sm">Enregistrer</Button>
+          <div className="space-y-2">
+            <Label htmlFor="telephone">Téléphone</Label>
+            <Input id="telephone" type="tel" value={telephone} onChange={(e) => setTelephone(e.target.value)} />
+          </div>
+          <Button size="sm" onClick={onEnregistrer}>
+            {enregistre ? (
+              <>
+                <CheckCircle2 className="h-4 w-4" />
+                Enregistré
+              </>
+            ) : (
+              "Enregistrer"
+            )}
+          </Button>
         </CardContent>
       </Card>
 
@@ -54,7 +93,7 @@ export function CompteForm() {
                 <Input id="nouveau" type="password" placeholder="8 caractères minimum" />
               </div>
               <div className="flex items-center gap-3">
-                <Button size="sm" onClick={() => setMotDePasseChange(false)}>
+                <Button size="sm" onClick={onMettreAJourMotDePasse}>
                   <CheckCircle2 className="h-4 w-4" />
                   Mettre à jour
                 </Button>
@@ -65,7 +104,15 @@ export function CompteForm() {
             </>
           ) : (
             <>
-              <p className="text-sm text-muted-foreground">Dernière modification il y a 3 mois.</p>
+              <p className="text-sm text-muted-foreground">
+                {motDePasseMisAJour ? (
+                  <span className="flex items-center gap-1.5 text-positive">
+                    <CheckCircle2 className="h-3.5 w-3.5" /> Mot de passe mis à jour à l&apos;instant.
+                  </span>
+                ) : (
+                  `Dernière modification le ${formatDate(utilisateur.motDePasseMisAJourLe)}.`
+                )}
+              </p>
               <Button size="sm" variant="outline" onClick={() => setMotDePasseChange(true)}>
                 Changer le mot de passe
               </Button>
@@ -89,7 +136,7 @@ export function CompteForm() {
                 <p className="text-xs text-muted-foreground">Un code supplémentaire vous sera demandé à chaque connexion.</p>
               </div>
             </div>
-            <Switch checked={deuxFA} onCheckedChange={setDeuxFA} />
+            <Switch checked={utilisateur.deuxFA} onCheckedChange={toggleDeuxFA} />
           </div>
         </CardContent>
       </Card>
