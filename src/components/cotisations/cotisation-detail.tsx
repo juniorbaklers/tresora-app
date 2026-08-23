@@ -73,7 +73,7 @@ export function CotisationDetail({ espace, cotisationId }: { espace: Espace; cot
         </div>
       )}
 
-      <SuiviTable espaceId={espace.id} cotisationId={cotisation.id} paiements={lignes} montant={cotisation.montant} />
+      <SuiviTable espaceId={espace.id} cotisationId={cotisation.id} cotisationNom={cotisation.nom} paiements={lignes} />
     </>
   );
 }

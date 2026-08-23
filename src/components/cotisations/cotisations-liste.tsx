@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Coins, Plus, ArrowRight } from "lucide-react";
+import { Coins, Plus, ArrowRight, Banknote } from "lucide-react";
 import { PageHeader } from "@/components/app-shell/page-header";
 import { EmptyState } from "@/components/app-shell/empty-state";
 import { Button } from "@/components/ui/button";
@@ -22,12 +22,20 @@ export function CotisationsListe({ espace }: { espace: Espace }) {
         title="Cotisations"
         subtitle={`${espace.nom} — suivez les cotisations et le taux de recouvrement des membres.`}
         action={
-          <Button asChild>
-            <Link href={`/espace/${espace.id}/cotisations/nouvelle`}>
-              <Plus className="h-4 w-4" />
-              Nouvelle cotisation
-            </Link>
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button asChild variant="outline">
+              <Link href={`/espace/${espace.id}/paiement`}>
+                <Banknote className="h-4 w-4" />
+                Encaisser un paiement
+              </Link>
+            </Button>
+            <Button asChild>
+              <Link href={`/espace/${espace.id}/cotisations/nouvelle`}>
+                <Plus className="h-4 w-4" />
+                Nouvelle cotisation
+              </Link>
+            </Button>
+          </div>
         }
       />
 
