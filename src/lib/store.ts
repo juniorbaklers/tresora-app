@@ -151,6 +151,7 @@ interface TresoraState {
     details?: DetailsPaiement
   ) => void;
   ajouterCotisation: (input: NouvelleCotisationInput) => string;
+  ajouterMembresACotisation: (cotisationId: string, membreIds: string[], responsable?: string) => void;
   ajouterEvenement: (input: NouvelEvenementInput) => string;
   ajouterMembre: (input: NouveauMembreInput) => string;
   corrigerRecette: (
@@ -301,6 +302,50 @@ export const useTresoraStore = create<TresoraState>()(
           ],
         }));
         return id;
+      },
+
+      ajouterMembresACotisation: (cotisationId, membreIds, responsable = UTILISATEUR.nom) => {
+        const cotisation = get().cotisations.find((c) => c.id === cotisationId);
+        if (!cotisation) return;
+        const dejaPresents = new Set(cotisation.paiements.map((p) => p.membreId));
+        const nouveaux = membreIds.filter((id) => !dejaPresents.has(id));
+        if (nouveaux.length === 0) return;
+        const membres = nouveaux
+          .map((id) => membreDuStore(get().membres, cotisation.espaceId, id))
+          .filter((m): m is Membre => !!m);
+        const { date, heure } = maintenant();
+        set((state) => ({
+          cotisations: state.cotisations.map((c) =>
+            c.id !== cotisationId
+              ? c
+              : {
+                  ...c,
+                  paiements: [
+                    ...c.paiements,
+                    ...nouveaux.map((membreId) => ({
+                      membreId,
+                      montantDu: c.montant,
+                      montantPaye: 0,
+                      statut: "impaye" as StatutPaiement,
+                      tranches: [],
+                    })),
+                  ],
+                }
+          ),
+          journal: [
+            ...state.journal,
+            {
+              id: idCourt("j"),
+              espaceId: cotisation.espaceId,
+              date,
+              heure,
+              utilisateur: responsable,
+              role: roleDans(cotisation.espaceId),
+              action: "A ajouté des membres à une cotisation",
+              nouvelleValeur: `${cotisation.nom} — ${membres.map((m) => `${m.prenom} ${m.nom}`).join(", ")}`,
+            },
+          ],
+        }));
       },
 
       ajouterEvenement: (input) => {

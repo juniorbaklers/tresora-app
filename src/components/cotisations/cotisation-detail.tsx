@@ -7,8 +7,8 @@ import { StatCard } from "@/components/dashboard/stat-card";
 import { SuiviTable } from "@/components/cotisations/suivi-table";
 import { RappelsCotisation } from "@/components/cotisations/rappels-cotisation";
 import { Badge } from "@/components/ui/badge";
-import { cotisationStats, getMembre } from "@/lib/data";
-import { useCotisation } from "@/lib/selecteurs";
+import { cotisationStats } from "@/lib/data";
+import { useCotisation, useMembres } from "@/lib/selecteurs";
 import { formatDate, formatFCFA } from "@/lib/format";
 import type { Espace } from "@/lib/types";
 
@@ -23,12 +23,13 @@ const PERIODICITE_LABELS: Record<string, string> = {
 
 export function CotisationDetail({ espace, cotisationId }: { espace: Espace; cotisationId: string }) {
   const cotisation = useCotisation(cotisationId);
+  const membresEspace = useMembres(espace.id);
   if (!cotisation || cotisation.espaceId !== espace.id) notFound();
 
   const stats = cotisationStats(cotisation);
   const lignes = cotisation.paiements
     .map((p) => {
-      const membre = getMembre(espace.id, p.membreId);
+      const membre = membresEspace.find((m) => m.id === p.membreId);
       return membre ? { ...p, membre } : null;
     })
     .filter((l): l is NonNullable<typeof l> => l !== null);
@@ -72,7 +73,7 @@ export function CotisationDetail({ espace, cotisationId }: { espace: Espace; cot
         </div>
       )}
 
-      <SuiviTable cotisationId={cotisation.id} paiements={lignes} montant={cotisation.montant} />
+      <SuiviTable espaceId={espace.id} cotisationId={cotisation.id} paiements={lignes} montant={cotisation.montant} />
     </>
   );
 }

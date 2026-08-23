@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useTresoraStore } from "@/lib/store";
-import { getMembre } from "@/lib/data";
+import { useMembres } from "@/lib/selecteurs";
 import { joursRestants, estEnRetard, formatDelai } from "@/lib/rappels";
 import { formatFCFA } from "@/lib/format";
 import type { Cotisation } from "@/lib/types";
@@ -14,6 +14,7 @@ import type { Cotisation } from "@/lib/types";
 export function RappelsCotisation({ cotisation }: { cotisation: Cotisation }) {
   const rappels = useTresoraStore((s) => s.rappels);
   const envoyerRappel = useTresoraStore((s) => s.envoyerRappel);
+  const membresEspace = useMembres(cotisation.espaceId);
   const [envoiTousFait, setEnvoiTousFait] = useState(false);
 
   const impayes = cotisation.paiements.filter((p) => p.statut !== "paye" && p.statut !== "exonere");
@@ -50,7 +51,7 @@ export function RappelsCotisation({ cotisation }: { cotisation: Cotisation }) {
         </p>
         <ul className="divide-y divide-ledger-line">
           {impayes.map((p) => {
-            const membre = getMembre(cotisation.espaceId, p.membreId);
+            const membre = membresEspace.find((m) => m.id === p.membreId);
             if (!membre) return null;
             const rappel = dernierRappel(p.membreId);
             const enRetard = estEnRetard(p, cotisation.dateLimite);

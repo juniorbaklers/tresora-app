@@ -95,9 +95,10 @@ export function useNotificationsCombinees(espaceId: string): NotificationItem[] 
   const cotisations = useCotisations(espaceId);
   const statiques = useNotifications(espaceId);
   const rappelsLusIds = useTresoraStore((s) => s.rappelsLusIds);
+  const membres = useTresoraStore((s) => s.membres);
 
   return useMemo(() => {
-    const dynamiques: NotificationItem[] = calculerRappelsDus(cotisations).map((r) => {
+    const dynamiques: NotificationItem[] = calculerRappelsDus(cotisations, (eId, mId) => membres[eId]?.find((m) => m.id === mId)).map((r) => {
       const id = idRappel(r.cotisation.id, r.membre.id);
       return {
         id,
@@ -110,14 +111,15 @@ export function useNotificationsCombinees(espaceId: string): NotificationItem[] 
       };
     });
     return [...dynamiques, ...statiques].sort((a, b) => b.date.localeCompare(a.date));
-  }, [cotisations, statiques, rappelsLusIds, espaceId]);
+  }, [cotisations, statiques, rappelsLusIds, membres, espaceId]);
 }
 
 export function useIdsRappelsActifs(espaceId: string): string[] {
   const cotisations = useCotisations(espaceId);
+  const membres = useTresoraStore((s) => s.membres);
   return useMemo(
-    () => calculerRappelsDus(cotisations).map((r) => idRappel(r.cotisation.id, r.membre.id)),
-    [cotisations]
+    () => calculerRappelsDus(cotisations, (eId, mId) => membres[eId]?.find((m) => m.id === mId)).map((r) => idRappel(r.cotisation.id, r.membre.id)),
+    [cotisations, membres]
   );
 }
 

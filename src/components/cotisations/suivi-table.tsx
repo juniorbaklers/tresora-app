@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/dialog";
 import { PaiementStatutBadge } from "@/components/cotisations/statut-badge";
 import { ScannerMembreDialog } from "@/components/cotisations/scanner-membre-dialog";
+import { AjouterMembresDialog } from "@/components/cotisations/ajouter-membres-dialog";
 import { useTresoraStore } from "@/lib/store";
 import { formatDate, formatFCFA } from "@/lib/format";
 import type { Membre, ModePaiement, OperateurMobileMoney, PaiementCotisation } from "@/lib/types";
@@ -58,7 +59,17 @@ const OPERATEURS: { value: OperateurMobileMoney; label: string }[] = [
   { value: "wave", label: "Wave" },
 ];
 
-export function SuiviTable({ cotisationId, paiements, montant }: { cotisationId: string; paiements: Ligne[]; montant: number }) {
+export function SuiviTable({
+  espaceId,
+  cotisationId,
+  paiements,
+  montant,
+}: {
+  espaceId: string;
+  cotisationId: string;
+  paiements: Ligne[];
+  montant: number;
+}) {
   const enregistrerPaiement = useTresoraStore((s) => s.enregistrerPaiement);
   const [recherche, setRecherche] = useState("");
   const [filtreStatut, setFiltreStatut] = useState<string>("tous");
@@ -130,6 +141,11 @@ export function SuiviTable({ cotisationId, paiements, montant }: { cotisationId:
           <ScanLine className="h-4 w-4" />
           Scanner un membre
         </Button>
+        <AjouterMembresDialog
+          espaceId={espaceId}
+          cotisationId={cotisationId}
+          membresDejaInclus={new Set(paiements.map((p) => p.membreId))}
+        />
       </div>
 
       <div className="overflow-x-auto rounded-xl border border-border">

@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { cotisationStats, getDerniersPaiements } from "@/lib/data";
-import { useCotisations, useEvenements, useContributionsRequisesA, useSoldeActuel, useTotalRecettes, useTotalDepenses, useRecettes, useDepenses } from "@/lib/selecteurs";
+import { useCotisations, useEvenements, useMembres, useContributionsRequisesA, useSoldeActuel, useTotalRecettes, useTotalDepenses, useRecettes, useDepenses } from "@/lib/selecteurs";
 import { serieHebdomadaireListe } from "@/lib/charts";
 import { formatFCFA, pct } from "@/lib/format";
 import { ContributionStatutBadge } from "@/components/contributions/statut-badge";
@@ -23,7 +23,8 @@ export function DashboardGroupe({ espace }: { espace: Espace }) {
   const evenements = useEvenements(espace.id);
   const evenementsActifs = evenements.filter((e) => e.statut === "actif");
   const contributionsRequises = useContributionsRequisesA(espace.id);
-  const derniersPaiements = cotisationActive ? getDerniersPaiements(cotisationActive, 5) : [];
+  const membresEspace = useMembres(espace.id);
+  const derniersPaiements = cotisationActive ? getDerniersPaiements(cotisationActive, membresEspace, 5) : [];
   const recettes = useRecettes(espace.id);
   const depenses = useDepenses(espace.id);
   const solde = useSoldeActuel(espace.id);

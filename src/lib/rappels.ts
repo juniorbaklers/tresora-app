@@ -1,5 +1,4 @@
 import type { Cotisation, Membre, PaiementCotisation } from "./types";
-import { getMembre } from "./data";
 
 export function joursRestants(dateLimite: string): number {
   const auj = new Date();
@@ -32,13 +31,16 @@ export interface RappelDu {
  * le centre de notifications, le widget et la section rappels de l'écran de
  * cotisation.
  */
-export function calculerRappelsDus(cotisations: Cotisation[]): RappelDu[] {
+export function calculerRappelsDus(
+  cotisations: Cotisation[],
+  trouverMembre: (espaceId: string, membreId: string) => Membre | undefined
+): RappelDu[] {
   const dus: RappelDu[] = [];
   for (const cotisation of cotisations) {
     if (cotisation.statut !== "active") continue;
     for (const paiement of cotisation.paiements) {
       if (paiement.statut === "paye" || paiement.statut === "exonere") continue;
-      const membre = getMembre(cotisation.espaceId, paiement.membreId);
+      const membre = trouverMembre(cotisation.espaceId, paiement.membreId);
       if (!membre) continue;
       const restants = joursRestants(cotisation.dateLimite);
       dus.push({

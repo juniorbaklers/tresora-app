@@ -424,12 +424,12 @@ export function cotisationStats(cotisation: Cotisation): CotisationStats {
   };
 }
 
-export function getDerniersPaiements(cotisation: Cotisation, limit = 5) {
+export function getDerniersPaiements(cotisation: Cotisation, membres: Membre[], limit = 5) {
   return cotisation.paiements
     .filter((p) => p.dernierPaiement)
     .sort((a, b) => (b.dernierPaiement ?? "").localeCompare(a.dernierPaiement ?? ""))
     .slice(0, limit)
-    .map((p) => ({ ...p, membre: getMembre(cotisation.espaceId, p.membreId) }));
+    .map((p) => ({ ...p, membre: membres.find((m) => m.id === p.membreId) }));
 }
 
 export const UTILISATEUR = {
