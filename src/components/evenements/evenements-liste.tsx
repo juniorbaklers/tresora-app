@@ -72,7 +72,10 @@ export function EvenementsListe({ espace }: { espace: Espace }) {
                 <span className="flex items-center gap-1.5">
                   <Users className="h-3.5 w-3.5" /> {e.participants} participants
                 </span>
-                <ArrowRight className="h-4 w-4 opacity-0 transition-opacity group-hover:opacity-100" />
+                <span className="flex items-center gap-1 font-medium text-foreground transition-colors group-hover:text-gold-foreground">
+                  Voir le détail
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                </span>
               </div>
             </Link>
           ))}

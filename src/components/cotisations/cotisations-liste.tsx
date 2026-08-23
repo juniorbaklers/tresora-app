@@ -77,7 +77,10 @@ export function CotisationsListe({ espace }: { espace: Espace }) {
                   <span>
                     {formatFCFA(c.montant)} / membre · {c.paiements.length} membres
                   </span>
-                  <ArrowRight className="h-4 w-4 opacity-0 transition-opacity group-hover:opacity-100" />
+                  <span className="flex items-center gap-1 font-medium text-foreground transition-colors group-hover:text-gold-foreground">
+                    Enregistrer un paiement
+                    <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                  </span>
                 </div>
               </Link>
             );
