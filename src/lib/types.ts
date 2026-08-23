@@ -56,12 +56,19 @@ export interface Membre {
   initiales: string;
 }
 
+export type ModePaiement = "especes" | "mobile_money" | "virement" | "cheque";
+
+export type OperateurMobileMoney = "orange_money" | "mtn_money" | "moov_money" | "wave";
+
 /** Un versement isolé — une cotisation peut être réglée en plusieurs fois. */
 export interface Tranche {
   id: string;
   date: string;
   montant: number;
   responsable: string;
+  modePaiement?: ModePaiement;
+  operateur?: OperateurMobileMoney;
+  reference?: string;
 }
 
 export interface PaiementCotisation {
@@ -151,7 +158,7 @@ export interface Depense {
   categorie: string;
   description: string;
   beneficiaire: string;
-  modePaiement: "especes" | "mobile_money" | "virement" | "cheque";
+  modePaiement: ModePaiement;
   responsable: string;
   justificatif: boolean;
   evenementId?: string;
@@ -166,6 +173,7 @@ export interface Evenement {
   dateDebut: string;
   dateFin: string;
   montantCible?: number;
+  montantSuggere?: number;
   montantCollecte: number;
   participants: number;
   statut: "planifie" | "actif" | "termine";

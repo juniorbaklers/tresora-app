@@ -19,6 +19,24 @@ export function useToutesCotisations() {
   return useTresoraStore((s) => s.cotisations);
 }
 
+export function useEvenements(espaceId: string) {
+  return useTresoraStore((s) => s.evenements[espaceId] ?? []);
+}
+
+export function useEvenement(id: string) {
+  return useTresoraStore(
+    useShallow((s) => Object.values(s.evenements).flat().find((e) => e.id === id))
+  );
+}
+
+export function useMembres(espaceId: string) {
+  return useTresoraStore((s) => s.membres[espaceId] ?? []);
+}
+
+export function useMembre(espaceId: string, membreId: string) {
+  return useTresoraStore((s) => s.membres[espaceId]?.find((m) => m.id === membreId));
+}
+
 export function useRecettes(espaceId: string) {
   return useTresoraStore((s) => s.recettes[espaceId] ?? []);
 }

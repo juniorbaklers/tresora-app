@@ -26,7 +26,7 @@ const NOMS = [
   "Kouamé", "Adou", "Gnahoré", "Diabaté", "Silué", "Tanoh",
 ];
 
-function initiales(prenom: string, nom: string) {
+export function initiales(prenom: string, nom: string) {
   return `${prenom[0]}${nom[0]}`.toUpperCase();
 }
 

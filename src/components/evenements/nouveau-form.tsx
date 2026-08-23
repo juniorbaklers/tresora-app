@@ -8,15 +8,29 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
+import { useTresoraStore } from "@/lib/store";
 
 export function NouvelEvenementForm({ espaceId }: { espaceId: string }) {
   const router = useRouter();
+  const ajouterEvenement = useTresoraStore((s) => s.ajouterEvenement);
   const [submitting, setSubmitting] = useState(false);
 
-  function onSubmit(e: React.FormEvent) {
+  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setSubmitting(true);
-    setTimeout(() => router.push(`/espace/${espaceId}/evenements`), 500);
+    const donnees = new FormData(e.currentTarget);
+    const objectif = Number(donnees.get("objectif"));
+    const suggere = Number(donnees.get("suggere"));
+    const id = ajouterEvenement({
+      espaceId,
+      nom: String(donnees.get("nom")),
+      description: String(donnees.get("description")),
+      dateDebut: String(donnees.get("debut")),
+      dateFin: String(donnees.get("fin")),
+      montantCible: objectif > 0 ? objectif : undefined,
+      montantSuggere: suggere > 0 ? suggere : undefined,
+    });
+    setTimeout(() => router.push(`/espace/${espaceId}/evenements/${id}`), 400);
   }
 
   return (
@@ -25,30 +39,30 @@ export function NouvelEvenementForm({ espaceId }: { espaceId: string }) {
         <CardContent className="space-y-5 pt-2">
           <div className="space-y-2">
             <Label htmlFor="nom">Nom de l&apos;événement</Label>
-            <Input id="nom" placeholder="Sortie annuelle des jeunes" required />
+            <Input id="nom" name="nom" placeholder="Sortie annuelle des jeunes" required />
           </div>
           <div className="space-y-2">
             <Label htmlFor="description">Description</Label>
-            <Textarea id="description" rows={3} required />
+            <Textarea id="description" name="description" rows={3} required />
           </div>
           <div className="grid gap-5 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="debut">Date de début</Label>
-              <Input id="debut" type="date" required />
+              <Input id="debut" name="debut" type="date" defaultValue={new Date().toISOString().slice(0, 10)} required />
             </div>
             <div className="space-y-2">
               <Label htmlFor="fin">Date de fin</Label>
-              <Input id="fin" type="date" required />
+              <Input id="fin" name="fin" type="date" required />
             </div>
           </div>
           <div className="grid gap-5 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="objectif">Montant cible (FCFA)</Label>
-              <Input id="objectif" type="number" min={0} placeholder="500 000" />
+              <Input id="objectif" name="objectif" type="number" min={0} placeholder="500 000" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="suggere">Montant suggéré / participant</Label>
-              <Input id="suggere" type="number" min={0} placeholder="10 000" />
+              <Input id="suggere" name="suggere" type="number" min={0} placeholder="10 000" />
             </div>
           </div>
         </CardContent>

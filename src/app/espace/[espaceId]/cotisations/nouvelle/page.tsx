@@ -12,7 +12,7 @@ export default async function NouvelleCotisationPage(props: PageProps<"/espace/[
   return (
     <PageContainer>
       <PageHeader eyebrow={espace.nom} title="Nouvelle cotisation" subtitle="Définissez le montant, la périodicité et les membres concernés." />
-      <NouvelleCotisationForm espaceId={espaceId} membresCount={espace.membresCount} responsable={UTILISATEUR.nom} />
+      <NouvelleCotisationForm espaceId={espaceId} responsable={UTILISATEUR.nom} />
     </PageContainer>
   );
 }
